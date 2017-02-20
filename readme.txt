@@ -1,1 +1,1 @@
-readme
+Welcome to the repository of "Pong Hal"
