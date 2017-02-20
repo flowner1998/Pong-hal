@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pong Controller Player 1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        button {
+            width: 100%;
+            height: 50%;
+            display: block;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var socket = io.connect();
+
+            $('button').on('mousedown', function(){
+                console.log('moving: ' + $(this).attr('id'));
+                socket.emit('player 1 movement', $(this).attr('id'));
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="up" >Up</button>
+    <button id="down" >Down</button>
+</body>
+</html>
