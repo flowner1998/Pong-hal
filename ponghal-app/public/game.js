@@ -46,7 +46,7 @@ var ball = {
     radius: 5,
     posX: 40,
     posY: 40,
-    velX: 1,
+    velX: 3,
     velY: 5,
     checkCollisionWall: function(){
         if((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2){return true;}else{return false;}},
