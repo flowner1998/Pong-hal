@@ -29,6 +29,10 @@ io.on('connection', function(socket){
         console.log('player 1 touch: ' + data);
         io.emit('player 1 touch', data);
     });
+    socket.on('player 2 touch', function (data) {
+        console.log('player 2 touch: ' + data);
+        io.emit('player 2 touch', data);
+    });
 
 
     socket.on('player1 up', function (data) {

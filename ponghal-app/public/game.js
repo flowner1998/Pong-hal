@@ -184,6 +184,9 @@ socket.on('player2 up', function(data){
 socket.on('player 1 touch', function(positionYPercentage){
     player1.posY = positionYPercentage * windowHeight;
 });
+socket.on('player 2 touch', function(positionYPercentage){
+    player2.posY = positionYPercentage * windowHeight;
+});
 
 //#######################DEBUG#########################
 $(document).keydown(function(e){
