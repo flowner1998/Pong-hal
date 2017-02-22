@@ -30,9 +30,22 @@
             var windowHeight = window.outerHeight;
 
 
-            $(window).on('mousemove', function(e){
-                console.log(windowHeight);
-                var y = e.pageY;
+            $(window).on('mousemove touchmove', function(e){
+                e.preventDefault();
+                console.log(e);
+
+                var touch = undefined;
+
+                if (e.originalEvent.touches) {
+                    touch = e.originalEvent.touches[0];
+                }
+
+//                pos_x = e.pageX or touch.pageX
+//                pos_y = e.pageY or touch.pageY
+
+
+
+                var y = touch.pageY;
                 var positionYPercentage = y / windowHeight;
                 console.log('y perc', positionYPercentage);
 
