@@ -175,7 +175,7 @@ socket.on('player2 up', function(data){
 
 //#######################DEBUG#########################
 $(document).keydown(function(e){
-    if(e.keyCode == 32 && running){
+    if(e.keyCode == 32 && !running){
         ball.start();
     }
 });
