@@ -5,6 +5,8 @@ var windowWidth = window.innerWidth,
     ctx = canvas.getContext('2d'),
     player1 = new Paddle(1, windowWidth / 4),
     player2 = new Paddle(2, (windowWidth / 4) * 3),
+    running = false,
+    startingPlayer = Math.floor(Math.random()*2 + 1);
     socket = io.connect();
 
 //Function to create the canvas
@@ -78,6 +80,16 @@ var ball = {
     posY: 40,
     velX: 3,
     velY: 5,
+    start: function(){
+        var yVelocity = Math.floor(Math.random() * 3) + 1;
+        if(this.posX < windowWidth){
+            this.velX = 3;
+            this.velY = yVelocity;
+        }else{
+            this.velX = -3;
+            this.velY = yVelocity;
+        }
+    },
     checkCollisionWall: function(){
         if((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2){return true;}else{return false;}},
     checkColissionPaddle: function(p1, p2){
@@ -141,6 +153,7 @@ function checkGameOver(){
         //Add point to player 1
         resetGame(2)
         player1.score += 1;
+        resetGame(2);
     }
 }
 
@@ -160,6 +173,11 @@ socket.on('player2 up', function(data){
 });
 
 //#######################DEBUG#########################
+$(document).keydown(function(e){
+    if(e.keyCode == 32 && running){
+        ball.start();
+    }
+});
 
 setInterval(function(){
     redraw();
