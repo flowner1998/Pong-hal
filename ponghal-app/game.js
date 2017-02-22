@@ -31,7 +31,7 @@ function Paddle(player){
             this.posY += this.velY;
         }
         if (this.isMovingUp) {
-            this.posY += this.velY;
+            this.posY -= this.velY;
         }
 
         ctx.fillStyle = '#FFFFFF';

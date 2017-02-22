@@ -29,9 +29,11 @@
             var socket = io.connect();
 
             $('button').on('mousedown', function(){
-                console.log('moving: ' + $(this).attr('id'));
-                socket.emit('player 1 movement', $(this).attr('id'));
+                socket.emit('player2 ' + $(this).attr('id'), true);
             });
+            $('button').on('mouseup', function(){
+                socket.emit('player2 ' + $(this).attr('id'), false)
+            })
         });
     </script>
 </head>

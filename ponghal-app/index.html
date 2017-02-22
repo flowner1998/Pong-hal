@@ -2,51 +2,29 @@
 <html>
     <head>
         <title>De Ponghal</title>
-
-        <style>
-            body {
-                text-align: center;
-            }
-
-            #paddle-player-1 {
-                width: 25px;
-                height: 100px;
-                background-color: black;
-                position: absolute;
-                top: 50px;
-                left: 50px
-            }
-        </style>
-
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-        <script type="text/javascript">
-            $(function(){
-                var socket = io.connect();
-
-                socket.on('player 1 movement', function(data){
-                    switch (data) {
-                        case 'up':
-                            console.log('player 1 is moving up');
-                            $('#paddle-player-1').stop().animate({top: '-=' + 100}, 0);
-                            break;
-                        case 'down':
-                            console.log('player 1 is moving down');
-                            $('#paddle-player-1').animate({top: '+=' + 100}, 0);
-                            break;
-                    }
-                });
-            });
-        </script>
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+            }
+            body{
+                overflow: hidden;
+                height: 100%;
+                width: 100%;
+            }
+            main{
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
     </head>
     <body>
-        <header>
-            <h1>De Ponghal</h1>
-        </header>
-
         <main>
-            <div id="paddle-player-1"></div>
+            <canvas id="game"></canvas>
+            <script src="game.js"></script>
         </main>
-
     </body>
 </html>
