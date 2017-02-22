@@ -133,6 +133,7 @@ function redraw(){
     ball.drawBall();
 }
 function resetGame(loserPlayer){
+    running = false;
     player1.resetPaddle(); player2.resetPaddle();
     ball.velX = ball.velY = 0;
     if(loserPlayer == 1){
