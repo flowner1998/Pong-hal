@@ -81,7 +81,7 @@ var ball = {
     velX: 3,
     velY: 5,
     start: function(){
-        var yVelocity = Math.floor(Math.random() * 6) -3;
+        var yVelocity = Math.floor(Math.random() * 6) -2;
         if(this.posX < windowWidth/2){
             this.velX = 3;
             this.velY = yVelocity;
