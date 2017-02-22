@@ -13,6 +13,18 @@ function createCanvas(){
     canvas.height = windowHeight;
     ctx.fillStyle = '#000000';
     ctx.fillRect(0,0,windowWidth,windowHeight);
+
+    drawNet();
+}
+
+function drawNet () {
+    var netWidth = 5;
+    var netHeight = 30;
+    ctx.fillStyle = '#ffffff';
+
+    for (var i = 0; i < 15; i++) {
+        ctx.fillRect(windowWidth / 2, i * (netHeight * 2), netWidth, netHeight);
+    }
 }
 
 //Prototype Object for the paddle
