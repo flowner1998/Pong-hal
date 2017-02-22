@@ -3,8 +3,8 @@ var windowWidth = window.innerWidth,
     windowHeight= window.innerHeight,
     canvas = document.getElementById('game'),
     ctx = canvas.getContext('2d'),
-    player1 = new Paddle(1),
-    player2 = new Paddle(2),
+    player1 = new Paddle(1, windowWidth / 4),
+    player2 = new Paddle(2, (windowWidth / 4) * 3),
     socket = io.connect();
 
 //Function to create the canvas
@@ -28,7 +28,7 @@ function drawNet () {
 }
 
 //Prototype Object for the paddle
-function Paddle(player){
+function Paddle(player, scorePositionX){
     this.player = player;
     this.paddleHeight = 100;
     this.paddleWidth = 10;
@@ -37,6 +37,8 @@ function Paddle(player){
     this.velY = 5;
     this.isMovingDown = false;
     this.isMovingUp = false;
+    this.score = 0;
+    this.scorePositionX = scorePositionX;
     this.drawPaddle = function(){
 
         if (this.isMovingDown) {
@@ -50,7 +52,11 @@ function Paddle(player){
         ctx.fillRect(this.posX, this.posY, this.paddleWidth, this.paddleHeight);
     };
 
-
+    this.drawScore = function () {
+        ctx.font = "50px Arial";
+        ctx.fillStyle = 'white';
+        ctx.fillText(this.score, scorePositionX, 150);
+    }
 }
 
 //object for the ball
@@ -97,7 +103,9 @@ function redraw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createCanvas();
     player1.drawPaddle();
+    player1.drawScore();
     player2.drawPaddle();
+    player2.drawScore();
     ball.drawBall();
 }
 function resetGame(){
