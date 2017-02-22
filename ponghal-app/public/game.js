@@ -81,7 +81,11 @@ var ball = {
     velX: 3,
     velY: 5,
     start: function(){
-        var yVelocity = Math.floor(Math.random() * 6) -2;
+        var yVelocity = 0;
+        while(yVelocity  == 0){
+            yVelocity = Math.floor(Math.random() * 6) -2;
+        }
+
         if(this.posX < windowWidth/2){
             this.velX = 3;
             this.velY = yVelocity;
@@ -137,10 +141,10 @@ function resetGame(loserPlayer){
     player1.resetPaddle(); player2.resetPaddle();
     ball.velX = ball.velY = 0;
     if(loserPlayer == 1){
-        ball.posX = player1.posX + player1.paddleWidth;
+        ball.posX = player1.posX + player1.paddleWidth + ball.radius;
         ball.posY = player1.posY + player1.paddleHeight/2;
     }else{
-        ball.posX = player2.posX - ball.radius*2;
+        ball.posX = player2.posX - ball.radius;
         ball.posY = player2.posY + player2.paddleHeight/2;
     }
 }
