@@ -69,7 +69,7 @@ function Paddle(player, scorePositionX){
     };
 
     this.drawScore = function () {
-        ctx.font = "50px Arial";
+        ctx.font = "50px squarefont";
         ctx.fillStyle = 'white';
         ctx.fillText(this.score, scorePositionX, 150);
     }
