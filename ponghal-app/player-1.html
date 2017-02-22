@@ -30,25 +30,22 @@
             var socket = io.connect();
             var windowHeight = window.outerHeight;
 
-
             $(window).on('mousemove touchmove', function(e){
                 e.preventDefault();
                 console.log(e);
 
+                var y = 0;
                 var touch = undefined;
 
                 if (e.originalEvent.touches) {
                     touch = e.originalEvent.touches[0];
+                    y = touch.pageY;
+                } else {
+                    y = e.pageY;
                 }
 
-//                pos_x = e.pageX or touch.pageX
-//                pos_y = e.pageY or touch.pageY
-
-
-
-                var y = touch.pageY;
                 var positionYPercentage = y / windowHeight;
-                console.log('y perc', positionYPercentage);
+//                console.log('y perc', positionYPercentage);
 
                 socket.emit('player 1 touch', positionYPercentage);
             });
