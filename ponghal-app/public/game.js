@@ -51,7 +51,7 @@ function Paddle(player, scorePositionX){
             this.posY = windowHeight - this.paddleHeight;
         }
     };
-    
+
     this.drawPaddle = function(){
         if (this.isMovingDown) {
             this.posY += this.velY;
@@ -135,10 +135,12 @@ function checkGameOver(){
     if(ball.posX < 0){
         //Add point to player 2
         resetGame(1);
+        player2.score += 1;
     }
     if(ball.posX > windowWidth - ball.radius * 2){
         //Add point to player 1
         resetGame(2)
+        player1.score += 1;
     }
 }
 
