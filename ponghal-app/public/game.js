@@ -33,19 +33,29 @@ function Paddle(player){
     this.paddleHeight = 100;
     this.paddleWidth = 10;
     this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth;
-    this.posY = 0;
+    this.posY = windowHeight/2 - this.paddleHeight;
     this.velY = 5;
     this.isMovingDown = false;
     this.isMovingUp = false;
+    this.resetPaddle = function(){
+        this.posY = windowHeight/2 - this.paddleHeight;
+    };
+    this.checkBoundary = function(){
+        if(this.posY <= 0){
+            this.posY = 0;
+        }
+        if(this.posY >= windowHeight - this.paddleHeight){
+            this.posY = windowHeight - this.paddleHeight;
+        }
+    };
     this.drawPaddle = function(){
-
         if (this.isMovingDown) {
             this.posY += this.velY;
         }
         if (this.isMovingUp) {
             this.posY -= this.velY;
         }
-
+        this.checkBoundary();
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(this.posX, this.posY, this.paddleWidth, this.paddleHeight);
     };
@@ -100,12 +110,25 @@ function redraw(){
     player2.drawPaddle();
     ball.drawBall();
 }
-function resetGame(){
-
+function resetGame(loserPlayer){
+    player1.resetPaddle(); player2.resetPaddle();
+    ball.velX = ball.velY = 0;
+    if(loserPlayer == 1){
+        ball.posX = player1.posX + player1.paddleWidth;
+        ball.posY = player1.posY + player1.paddleHeight/2;
+    }else{
+        ball.posX = player2.posX - ball.radius*2;
+        ball.posY = player2.posY + player2.paddleHeight/2;
+    }
 }
 function checkGameOver(){
-    if(ball.posX<0 || ball.posX > windowWidth){
-        resetGame();
+    if(ball.posX < 0){
+        //Add point to player 2
+        resetGame(1);
+    }
+    if(ball.posX > windowWidth - ball.radius * 2){
+        //Add point to player 1
+        resetGame(2)
     }
 }
 
@@ -123,6 +146,8 @@ socket.on('player1 up', function(data){
 socket.on('player2 up', function(data){
     player2.isMovingUp = (data && !player2.isMovingUp) ? true : false;
 });
+
+//#######################DEBUG#########################
 
 setInterval(function(){
     redraw();
