@@ -22,10 +22,20 @@ function createCanvas(){
 function drawNet () {
     var netWidth = 5;
     var netHeight = 30;
+
+    // calculate amount of net pieces needed to fill at least 50% of screen height
+    var nrOfNetPieces = Math.ceil((windowHeight / 2) / netHeight);
+
+    // calculate remainder white space
+    var totalWhiteSpaceHeight = windowHeight - (nrOfNetPieces * netHeight);
+
+    // calculate individual white space height. nr of white spaces is -1 net piece so our net always ends with a net piece
+    var whiteSpaceHeight = totalWhiteSpaceHeight / (nrOfNetPieces - 1);
+
     ctx.fillStyle = '#ffffff';
 
-    for (var i = 0; i < 15; i++) {
-        ctx.fillRect(windowWidth / 2, i * (netHeight * 2), netWidth, netHeight);
+    for (var i = 0; i < nrOfNetPieces; i++) {
+        ctx.fillRect(windowWidth / 2, i * (netHeight + whiteSpaceHeight), netWidth, netHeight);
     }
 }
 
@@ -69,7 +79,7 @@ function Paddle(player, scorePositionX){
     };
 
     this.drawScore = function () {
-        ctx.font = "50px squarefont";
+        ctx.font = "60px squarefont";
         ctx.fillStyle = 'white';
         ctx.fillText(this.score, scorePositionX, 150);
     }
