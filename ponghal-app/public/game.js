@@ -35,11 +35,12 @@ function Paddle(player, scorePositionX){
     this.paddleHeight = 100;
     this.paddleWidth = 10;
     this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth;
-    this.posY = windowHeight/2 - this.paddleHeight;
+    this.posY = windowHeight/2 - this.paddleHeight/2;
     this.velY = 5;
     this.isMovingDown = false;
     this.isMovingUp = false;
     this.score = 0;
+    this.center = this.posY + this.paddleHeight/2;
     this.scorePositionX = scorePositionX;
 
     this.resetPaddle = function(){
@@ -62,6 +63,7 @@ function Paddle(player, scorePositionX){
             this.posY -= this.velY;
         }
         this.checkBoundary();
+        this.center = this.posY + this.paddleHeight/2;
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(this.posX, this.posY, this.paddleWidth, this.paddleHeight);
     };
@@ -76,11 +78,25 @@ function Paddle(player, scorePositionX){
 //object for the ball
 var ball = {
     radius: 5,
-    posX: 40,
-    posY: 40,
-    velX: 3,
-    velY: 5,
+    posX: 0,
+    posY: windowHeight/2,
+    velX: 0,
+    velY: 0,
+    maxBounceAngle: 5*Math.PI,
+    bounceAngle: 0,
     start: function(){
+        switch(startingPlayer){
+            case 1:
+                this.posX = player1.posX + player1.paddleWidth + this.radius;
+                this.posY = player1.posY + player1.paddleHeight/2 + this.radius;
+                break;
+            case 2:
+                this.posX = player2.posX - this.radius;
+                this.posY = player2.posY + player2.paddleHeight/2 + this.radius;
+                break;
+        }
+    },
+    startBall: function(){
         var yVelocity = 0;
         while(yVelocity  == 0){
             yVelocity = Math.floor(Math.random() * 6) -2;
@@ -93,19 +109,29 @@ var ball = {
             this.velX = -3;
             this.velY = yVelocity;
         }
+        running = true;
     },
     checkCollisionWall: function(){
         if((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2){return true;}else{return false;}},
     checkColissionPaddle: function(p1, p2){
-        if(this.posX <= p1.posX + p1.paddleWidth && this.posY > p1.posY && this.posY < p1.posY + p1.paddleHeight){
+        if(this.posX <= p1.posX + p1.paddleWidth && this.posY >= p1.posY && this.posY <= p1.posY + p1.paddleHeight){
             this.velX *= 1.1;
+            this.bounceAngle = this.maxBounceAngle * Math.abs(this.posY - p1.center);
+            this.velY = Math.sin(this.bounceAngle);
+            console.log('velX: ' + this.velX);
+            console.log('velY: ' + this.velY);
             return true;
         }else if(this.posX >= p2.posX && this.posY > p2.posY && this.posY < p2.posY + p2.paddleHeight){
             this.velX *= 1.1;
+            this.bounceAngle = this.maxBounceAngle * Math.abs(this.posY - p2.center);
+            this.velY = Math.sin(this.bounceAngle);
+            console.log('velX: ' + this.velX);
+            console.log('velY: ' + this.velY);
             return true;
         }else{
             return false;
         }
+
     },
     updateBall: function(){
         if(this.checkCollisionWall()){
@@ -134,6 +160,9 @@ function redraw(){
     player1.drawScore();
     player2.drawPaddle();
     player2.drawScore();
+    if(!running){
+        ball.start();
+    }
     ball.drawBall();
 }
 function resetGame(loserPlayer){
@@ -149,14 +178,14 @@ function resetGame(loserPlayer){
     }
 }
 function checkGameOver(){
-    if(ball.posX < 0){
+    if(ball.posX < 0-ball.radius){
         //Add point to player 2
         resetGame(1);
         player2.score += 1;
     }
-    if(ball.posX > windowWidth - ball.radius * 2){
+    if(ball.posX > windowWidth){
         //Add point to player 1
-        resetGame(2)
+        resetGame(2);
         player1.score += 1;
         resetGame(2);
     }
@@ -191,10 +220,11 @@ socket.on('player 2 touch', function(positionYPercentage){
 //#######################DEBUG#########################
 $(document).keydown(function(e){
     if(e.keyCode == 32 && !running){
-        ball.start();
+        ball.startBall();
     }
 });
-
+console.log(ball.posX);
+ball.start();
 setInterval(function(){
     redraw();
     checkGameOver();
