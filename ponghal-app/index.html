@@ -23,6 +23,7 @@
         <script type="text/javascript">
             $(function(){
                 var socket = io.connect();
+
                 socket.on('player 1 movement', function(data){
                     switch (data) {
                         case 'up':
