@@ -78,8 +78,8 @@ var ball = {
     radius: 5,
     posX: 40,
     posY: 40,
-    velX: 3,
-    velY: 5,
+    velX: 5,
+    velY: 6,
     start: function(){
         var yVelocity = 0;
         while(yVelocity  == 0){
@@ -87,10 +87,10 @@ var ball = {
         }
 
         if(this.posX < windowWidth/2){
-            this.velX = 3;
+            this.velX = 5;
             this.velY = yVelocity;
         }else{
-            this.velX = -3;
+            this.velX = -5;
             this.velY = yVelocity;
         }
     },
