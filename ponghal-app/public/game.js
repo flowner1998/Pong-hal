@@ -173,6 +173,14 @@ socket.on('player2 up', function(data){
     player2.isMovingUp = (data && !player2.isMovingUp) ? true : false;
 });
 
+
+
+
+
+socket.on('player 1 touch', function(positionYPercentage){
+    player1.posY = positionYPercentage * windowHeight;
+});
+
 //#######################DEBUG#########################
 $(document).keydown(function(e){
     if(e.keyCode == 32 && !running){

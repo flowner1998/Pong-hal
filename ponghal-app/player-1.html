@@ -27,6 +27,17 @@
     <script type="text/javascript">
         $(function(){
             var socket = io.connect();
+            var windowHeight = window.outerHeight;
+
+
+            $(window).on('mousemove', function(e){
+                console.log(windowHeight);
+                var y = e.pageY;
+                var positionYPercentage = y / windowHeight;
+                console.log('y perc', positionYPercentage);
+
+                socket.emit('player 1 touch', positionYPercentage);
+            });
 
             $('button').on('mousedown touchstart', function(){
                 socket.emit('player1 ' + $(this).attr('id'), true);
@@ -38,7 +49,7 @@
     </script>
 </head>
 <body>
-    <button id="up" >Up</button>
-    <button id="down" >Down</button>
+    <!--<button id="up" >Up</button>-->
+    <!--<button id="down" >Down</button>-->
 </body>
 </html>

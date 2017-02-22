@@ -24,6 +24,13 @@ io.on('connection', function(socket){
 
   });
 
+
+    socket.on('player 1 touch', function (data) {
+        console.log('player 1 touch: ' + data);
+        io.emit('player 1 touch', data);
+    });
+
+
     socket.on('player1 up', function (data) {
         console.log('player1 up: ' + data);
         io.emit('player1 up', data);
