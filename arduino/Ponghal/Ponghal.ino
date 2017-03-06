@@ -1,30 +1,10 @@
-/*************************************************** 
-  This is an example for the Adafruit CC3000 Wifi Breakout & Shield
-
-  Designed specifically to work with the Adafruit WiFi products:
-  ----> https://www.adafruit.com/products/1469
-
-  Adafruit invests time and resources providing this open source code, 
-  please support Adafruit and open-source hardware by purchasing 
-  products from Adafruit!
-
-  Written by Limor Fried & Kevin Townsend for Adafruit Industries.  
-  BSD license, all text above must be included in any redistribution
- ****************************************************/
- 
- /*
-This example does a test of the TCP client capability:
-  * Initialization
-  * Optional: SSID scan
-  * AP connection
-  * DHCP printout
-  * DNS lookup
-  * Optional: Ping
-  * Connect to website and print out webpage contents
-  * Disconnect
-SmartConfig is still beta and kind of works but is not fully vetted!
-It might not work on all networks!
-*/
+/*
+ * Program to run the arduino for pong hal
+ * Made by: Chelsea Kauffeld, Floris van Maldegem, Joey Hoogerwerf, Teun van Lingen
+ * 
+ * 
+ * 
+ */
 #include <Adafruit_CC3000.h>
 #include <ccspi.h>
 #include <SPI.h>
