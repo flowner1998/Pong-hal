@@ -31,6 +31,7 @@ It might not work on all networks!
 #include <string.h>
 #include "utility/debug.h"
 
+// pin for button
 // These are the interrupt and control pins
 #define ADAFRUIT_CC3000_IRQ   3  // MUST be an interrupt pin!
 // These can be any two pins
