@@ -7,7 +7,16 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/public', express.static('public'));
 
-
+app.get('/arduino-player-1.html', function(req, res){
+    res.sendfile('arduino-player-1.html');
+    var data = true;
+    io.emit('start ball', data);
+});
+app.get('/arduino-player-2.html', function(req, res){
+    res.sendfile('arduino-player-2.html');
+    var data = true;
+    io.emit('start ball', data);
+});
 app.get('/', function(req, res){
 	res.sendfile('index.html');
 });
