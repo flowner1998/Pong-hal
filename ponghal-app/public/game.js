@@ -48,7 +48,7 @@ var ball = {
     velY: 0,
     direction: 0,
     speedMultiplier: 1.1,
-    speedCap: 40,
+    speedCap: 30,
     bounceAngle: [-5,-4,-3,-2,-1,1,2,3,4,5],
     start: function(){
         switch(startingPlayer){
