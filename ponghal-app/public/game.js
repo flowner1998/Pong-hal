@@ -101,6 +101,8 @@ var ball = {
             this.velX = Math.abs(this.velX) * this.direction;
             if(Math.abs(this.velX) < this.speedCap){
                 this.velX *= this.speedMultiplier;
+            }else{
+                this.velX = this.speedCap;
             }
         }
         this.posX += this.velX;
