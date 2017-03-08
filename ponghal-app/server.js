@@ -25,38 +25,38 @@ app.use('/public', express.static('public'));
 app.get('/arduino', function(){
     socket.on('light on', function(data){
         if(data){
-            res.sendFile('arduino-lightOn');
+            res.sendFile('arduino-lightOn', {root: __dirname});
         }else{
-            res.sendFile('arduino-idle');
+            res.sendFile('arduino-idle', {root: __dirname});
         }
     });
 });
 
 app.post('/arduino',function(){
-    res.sendFile('arduino-start');
+    res.sendFile('arduino-start', {root: __dirname});
     var data = true;
     io.emit('start ball', data);
 });
 
 app.get('/arduino-player-1.html', function(req, res){
-    res.sendfile('arduino-player-1.html');
+    res.sendfile('arduino-player-1.html', {root: __dirname});
     var data = true;
     io.emit('start ball', data);
 });
 app.get('/arduino-player-2.html', function(req, res){
-    res.sendfile('arduino-player-2.html');
+    res.sendfile('arduino-player-2.html', {root: __dirname});
     var data = true;
     io.emit('start ball', data);
 });
 app.get('/', function(req, res){
-	res.sendFile('index.html');
+	res.sendFile('index.html', {root: __dirname});
 });
 
 app.get('/player-1', function(req, res){
-    res.sendFile('player-1.html');
+    res.sendFile('player-1.html', {root: __dirname});
 });
 app.get('/player-2', function(req, res){
-    res.sendFile('player-2.html');
+    res.sendFile('player-2.html', {root: __dirname});
 });
 
 

@@ -9,6 +9,36 @@ var windowWidth = window.innerWidth,
     startingPlayer = Math.floor(Math.random()*2 + 1);
     socket = io.connect();
 
+//Function to create the canvas
+function createCanvas(){
+    canvas.width = windowWidth;
+    canvas.height = windowHeight;
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0,0,windowWidth,windowHeight);
+
+    drawNet();
+}
+
+function drawNet () {
+    var netWidth = 5;
+    var netHeight = 30;
+
+    // calculate amount of net pieces needed to fill at least 50% of screen height
+    var nrOfNetPieces = Math.ceil((windowHeight / 2) / netHeight);
+
+    // calculate remainder white space
+    var totalWhiteSpaceHeight = windowHeight - (nrOfNetPieces * netHeight);
+
+    // calculate individual white space height. nr of white spaces is -1 net piece so our net always ends with a net piece
+    var whiteSpaceHeight = totalWhiteSpaceHeight / (nrOfNetPieces - 1);
+
+    ctx.fillStyle = '#ffffff';
+
+    for (var i = 0; i < nrOfNetPieces; i++) {
+        ctx.fillRect(windowWidth / 2, i * (netHeight + whiteSpaceHeight), netWidth, netHeight);
+    }
+}
+
 //object for the ball
 var ball = {
     radius: 5,
@@ -85,41 +115,11 @@ var ball = {
     }
 };
 
-//Function to create the canvas
-function createCanvas(){
-    canvas.width = windowWidth;
-    canvas.height = windowHeight;
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0,0,windowWidth,windowHeight);
-
-    drawNet();
-}
-
-function drawNet () {
-    var netWidth = 5;
-    var netHeight = 30;
-
-    // calculate amount of net pieces needed to fill at least 50% of screen height
-    var nrOfNetPieces = Math.ceil((windowHeight / 2) / netHeight);
-
-    // calculate remainder white space
-    var totalWhiteSpaceHeight = windowHeight - (nrOfNetPieces * netHeight);
-
-    // calculate individual white space height. nr of white spaces is -1 net piece so our net always ends with a net piece
-    var whiteSpaceHeight = totalWhiteSpaceHeight / (nrOfNetPieces - 1);
-
-    ctx.fillStyle = '#ffffff';
-
-    for (var i = 0; i < nrOfNetPieces; i++) {
-        ctx.fillRect(windowWidth / 2, i * (netHeight + whiteSpaceHeight), netWidth, netHeight);
-    }
-}
-
 //Prototype Object for the paddle
 function Paddle(player, scorePositionX){
     this.player = player;
     this.paddleHeight = 100;
-    this.paddleWidth = 10;
+    this.paddleWidth = 15;
     this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth;
     this.posY = windowHeight/2 - this.paddleHeight/2;
     this.velY = 5;
@@ -128,6 +128,8 @@ function Paddle(player, scorePositionX){
     this.score = 0;
     this.paddleSegmentHeight = this.paddleHeight/10;
     this.scorePositionX = scorePositionX;
+    this.maxMovementPerInterval = 5;
+    this.posYLastInterval = this.posY;
     this.ballWasHit = false;
     this.returnBounceAngle = function(){
         for(var i = 0, height = this.paddleSegmentHeight; i < 10; i++, height+=this.paddleSegmentHeight){
@@ -149,7 +151,19 @@ function Paddle(player, scorePositionX){
             this.posY = windowHeight - this.paddleHeight;
         }
     };
-
+    this.movePaddle = function(cursorPos){
+        var movement =  cursorPos - this.posYLastInterval;
+        if(Math.abs(movement) > this.maxMovementPerInterval){
+            if(movement > 0){
+                this.posY += this.maxMovementPerInterval;
+            }else{
+                this.posY -= this.maxMovementPerInterval;
+            }
+        }else{
+            this.posY = cursorPos;
+        }
+        this.posYLastInterval = this.posY;
+    };
     this.drawPaddle = function(){
         if (this.isMovingDown) {
             this.posY += this.velY;
@@ -230,18 +244,18 @@ socket.on('player2 up', function(data){
 
 
 //New touch technique
-socket.on('player 1 touch', function(positionYPercentage){
-    player1.posY = positionYPercentage * windowHeight;
-});
-socket.on('player 2 touch', function(positionYPercentage){
-    player2.posY = positionYPercentage * windowHeight;
-});
-socket.on('start ball', function(data){
-    if(data && !running){
-        ball.startBall();
-        socket.emit('start ball', false);
-    }
-});
+// socket.on('player 1 touch', function(positionYPercentage){
+//     player1.movePaddle(positionYPercentage * windowHeight);
+// });
+// socket.on('player 2 touch', function(positionYPercentage){
+//     player2.posY = positionYPercentage * windowHeight;
+// });
+// socket.on('start ball', function(data){
+//     if(data && !running){
+//         ball.startBall();
+//         socket.emit('start ball', false);
+//     }
+// });
 
 //#######################DEBUG#########################
 $(document).keydown(function(e){
@@ -280,6 +294,18 @@ $(document).keydown(function(e){
 });
 ball.start();
 setInterval(function(){
+    socket.on('player 1 touch', function(positionYPercentage){
+        player1.movePaddle(positionYPercentage * windowHeight);
+    });
+    socket.on('player 2 touch', function(positionYPercentage){
+        player2.movePaddle(positionYPercentage * windowHeight);
+    });
+    socket.on('start ball', function(data){
+        if(data && !running){
+            ball.startBall();
+            socket.emit('start ball', false);
+        }
+    });
     redraw();
     checkGameOver();
 },1000/60);
