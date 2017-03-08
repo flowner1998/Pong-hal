@@ -49,14 +49,14 @@ app.get('/arduino-player-2.html', function(req, res){
     io.emit('start ball', data);
 });
 app.get('/', function(req, res){
-	res.sendfile('index.html');
+	res.sendFile('index.html');
 });
 
 app.get('/player-1', function(req, res){
-    res.sendfile('player-1.html');
+    res.sendFile('player-1.html');
 });
 app.get('/player-2', function(req, res){
-    res.sendfile('player-2.html');
+    res.sendFile('player-2.html');
 });
 
 
