@@ -237,11 +237,9 @@ socket.on('player 2 touch', function(positionYPercentage){
     player2.posY = positionYPercentage * windowHeight;
 });
 socket.on('start ball', function(data){
-    if(data){
-        if(!running){
-            ball.startBall();
-            socket.emit('start ball', false);
-        }
+    if(data && !running){
+        ball.startBall();
+        socket.emit('start ball', false);
     }
 });
 

@@ -1,11 +1,42 @@
+/**
+ *
+ * Server sided node.js for the ponghal-app
+ * Contributors: Joey Hoogerwerf, Floris van Maldegem, Teun van Lingen, Chelsea Kauffeld
+ *
+ */
+/*##################################################################################*/
+/**
+ * Including Node Package Modules
+ * !REQUIRED ON FOLDER IS "npm install" & "npm install johnny-five"!
+ */
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var bodyParser = require("body-parser");
+//var five = require("jonny-five");//Including johnny-five module for the Arduino compatibility
 
+/**
+ * Server sending files to a client
+ */
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/public', express.static('public'));
+
+app.get('/arduino', function(){
+    socket.on('light on', function(data){
+        if(data){
+            res.sendFile('arduino-lightOn');
+        }else{
+            res.sendFile('arduino-idle');
+        }
+    });
+});
+
+app.post('/arduino',function(){
+    res.sendFile('arduino-start');
+    var data = true;
+    io.emit('start ball', data);
+});
 
 app.get('/arduino-player-1.html', function(req, res){
     res.sendfile('arduino-player-1.html');
@@ -27,6 +58,12 @@ app.get('/player-1', function(req, res){
 app.get('/player-2', function(req, res){
     res.sendfile('player-2.html');
 });
+
+
+
+/**
+ * Input Output system for javascript from players to index
+ */
 
 io.on('connection', function(socket){
   socket.on('disconnect', function(){
