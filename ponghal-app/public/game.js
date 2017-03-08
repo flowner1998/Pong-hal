@@ -45,7 +45,7 @@ var ball = {
         running = true;
     },
     checkCollisionWall: function(){
-        if((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2){return true;}else{return false;}},
+        return((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2)},
     checkCollisionPaddle: function(p1, p2){
         if(this.posX <= p1.posX + p1.paddleWidth && this.posY >= p1.posY && this.posY <= p1.posY + p1.paddleHeight && !p1.ballWasHit){
             this.velY = this.speedMultiplier * p1.returnBounceAngle();
@@ -214,16 +214,16 @@ function checkGameOver(){
 
 //Old button technique
 socket.on('player1 down', function(data){
-    player1.isMovingDown = (data && !player1.isMovingDown) ? true : false;
+    player1.isMovingDown = (data && !player1.isMovingDown);
 });
 socket.on('player2 down', function(data){
-    player2.isMovingDown = (data && !player2.isMovingDown) ? true : false;
+    player2.isMovingDown = (data && !player2.isMovingDown);
 });
 socket.on('player1 up', function(data){
-    player1.isMovingUp = (data && !player1.isMovingUp) ? true : false;
+    player1.isMovingUp = (data && !player1.isMovingUp);
 });
 socket.on('player2 up', function(data){
-    player2.isMovingUp = (data && !player2.isMovingUp) ? true : false;
+    player2.isMovingUp = (data && !player2.isMovingUp);
 });
 
 
