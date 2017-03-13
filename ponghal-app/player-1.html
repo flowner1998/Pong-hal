@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Pong Controller Player 1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="public/css/style.css">
 
     <style>
         * {
@@ -27,7 +28,13 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <h1>Login met facebook!</h1>
+    <main class="player">
+        <h1>PONGHAL</h1>
+
+        <div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="true" onlogin="checkLoginState();" onlogout="checkLoginState();"></div>
+
+        <div id="status"></div>
+    </main>
 
     <script>
         function statusChangeCallback(response) {
@@ -81,10 +88,6 @@
         }
     </script>
 
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
-
-    <div id="status"></div>
-
     <script type="text/javascript">
         $(function(){
             var socket = io.connect();
@@ -92,7 +95,6 @@
 
             $(window).on('mousemove touchmove', function(e){
                 e.preventDefault();
-                console.log(e);
 
                 var y = 0;
                 var touch = undefined;
