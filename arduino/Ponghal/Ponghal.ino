@@ -12,6 +12,8 @@
 #include "utility/debug.h"
 
 // pin for button
+int buttonPin = 7;
+
 // These are the interrupt and control pins
 #define ADAFRUIT_CC3000_IRQ   3  // MUST be an interrupt pin!
 // These can be any two pins
@@ -32,7 +34,7 @@ Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS, ADAFRUIT_CC3000_IRQ
                                    // you're accessing is quick to respond, you can reduce this value.
 
 // What page to grab!
-#define WEBSITE      "www.adafruit.com"
+#define WEBSITE      "37.97.233.53:300"
 #define WEBPAGE      "/arduino-player-1.html"
 
 
@@ -43,13 +45,14 @@ Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS, ADAFRUIT_CC3000_IRQ
 */
 /**************************************************************************/
 
-uint32_t ip;
+uint32_t ip = cc3000.IP2U32(37, 97, 233, 53);
 
 void setup(void)
 {
   Serial.begin(115200);
-  Serial.println(F("Hello, CC3000!\n")); 
-
+  Serial.println(F("Hello, CC3000!\n"));
+  pinMode(buttonPin, INPUT);
+  
   Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
   
   /* Initialise the module */
@@ -61,7 +64,7 @@ void setup(void)
   }
   
   // Optional SSID scan
-  // listSSIDResults();
+  //listSSIDResults();
   
   Serial.print(F("\nAttempting to connect to ")); Serial.println(WLAN_SSID);
   if (!cc3000.connectToAP(WLAN_SSID, WLAN_PASS, WLAN_SECURITY)) {
@@ -141,7 +144,34 @@ void setup(void)
 
 void loop(void)
 {
- delay(1000);
+ if(digitalRead(buttonPin)== HIGH){
+  Serial.println("Button Clicked");
+  Adafruit_CC3000_Client www = cc3000.connectTCP(ip, 300);
+  if (www.connect(ip, 300)) {
+    www.print("GET ");
+    www.print(WEBPAGE);
+    www.print("HTTP/1.1");
+    www.println();
+    www.println();
+  } else {
+    Serial.println(F("Connection failed"));    
+    return;
+  }
+
+  Serial.println(F("-------------------------------------"));
+  
+  /* Read data until either the connection is closed, or the idle timeout is reached. */ 
+  unsigned long lastRead = millis();
+  while (www.connected() && (millis() - lastRead < IDLE_TIMEOUT_MS)) {
+    while (www.available()) {
+      char c = www.read();
+      Serial.print(c);
+      lastRead = millis();
+    }
+  }
+  www.flush();
+  www.close();
+ }
 }
 
 /**************************************************************************/
