@@ -9,82 +9,6 @@ var windowWidth = window.innerWidth,
     startingPlayer = Math.floor(Math.random()*2 + 1);
     socket = io.connect();
 
-//object for the ball
-var ball = {
-    radius: 5,
-    posX: 0,
-    posY: windowHeight/2,
-    velX: 0,
-    velY: 0,
-    direction: 0,
-    speedMultiplier: 1.1,
-    speedCap: 40,
-    bounceAngle: [-5,-4,-3,-2,-1,1,2,3,4,5],
-    start: function(){
-        switch(startingPlayer){
-            case 1:
-                this.posX = player1.posX + player1.paddleWidth + this.radius;
-                this.posY = player1.posY + player1.paddleHeight/2 + this.radius;
-                this.direction = 1;
-                break;
-            case 2:
-                this.posX = player2.posX - this.radius;
-                this.posY = player2.posY + player2.paddleHeight/2 + this.radius;
-                this.direction = -1;
-                break;
-        }
-    },
-    startBall: function(){
-        var yVelocity = 0;
-        while(yVelocity  == 0){
-            yVelocity = Math.floor(Math.random() * 6) -2;
-        }
-
-        this.velX = 5 * this.direction;
-        this.velY = yVelocity;
-        running = true;
-    },
-    checkCollisionWall: function(){
-        if((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2){return true;}else{return false;}},
-    checkCollisionPaddle: function(p1, p2){
-        if(this.posX <= p1.posX + p1.paddleWidth && this.posY >= p1.posY && this.posY <= p1.posY + p1.paddleHeight && !p1.ballWasHit){
-            this.velY = this.speedMultiplier * p1.returnBounceAngle();
-            player1.ballWasHit = true;
-            player2.ballWasHit = false;
-            return true;
-        }else if(this.posX >= p2.posX && this.posY > p2.posY && this.posY < p2.posY + p2.paddleHeight && !p2.ballWasHit){
-            this.velY = this.speedMultiplier * p2.returnBounceAngle();
-            player1.ballWasHit = false;
-            player2.ballWasHit = true;
-            return true;
-        }else{
-            return false;
-        }
-
-    },
-    updateBall: function(){
-        if(this.checkCollisionWall()){
-            this.velY *= -1;
-        }
-        if(this.checkCollisionPaddle(player1,player2)){
-            this.direction *= -1;
-            this.velX = Math.abs(this.velX) * this.direction;
-            if(Math.abs(this.velX) < this.speedCap){
-                this.velX *= this.speedMultiplier;
-            }
-        }
-        this.posX += this.velX;
-        this.posY += this.velY;
-
-    },
-    drawBall: function(){
-        this.updateBall();
-        ctx.fillStyle = '#FFFFFF';
-        ctx.arc(this.posX,this.posY, this.radius,0,Math.PI*2,false);
-        ctx.fill();
-    }
-};
-
 //Function to create the canvas
 function createCanvas(){
     canvas.width = windowWidth;
@@ -115,11 +39,89 @@ function drawNet () {
     }
 }
 
+//object for the ball
+var ball = {
+    radius: 5,
+    posX: 0,
+    posY: windowHeight/2,
+    velX: 0,
+    velY: 0,
+    direction: 0,
+    speedMultiplier: 1.1,
+    speedCap: 30,
+    bounceAngle: [-5,-4,-3,-2,-1,1,2,3,4,5],
+    start: function(){
+        switch(startingPlayer){
+            case 1:
+                this.posX = player1.posX + player1.paddleWidth + this.radius;
+                this.posY = player1.posY + player1.paddleHeight/2 + this.radius;
+                this.direction = 1;
+                break;
+            case 2:
+                this.posX = player2.posX - this.radius;
+                this.posY = player2.posY + player2.paddleHeight/2 + this.radius;
+                this.direction = -1;
+                break;
+        }
+    },
+    startBall: function(){
+        var yVelocity = 0;
+        while(yVelocity  == 0){
+            yVelocity = Math.floor(Math.random() * 6) -2;
+        }
+
+        this.velX = 5 * this.direction;
+        this.velY = yVelocity;
+        running = true;
+    },
+    checkCollisionWall: function(){
+        return((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2)},
+    checkCollisionPaddle: function(p1, p2){
+        if(this.posX <= p1.posX + p1.paddleWidth && this.posY >= p1.posY && this.posY <= p1.posY + p1.paddleHeight && !p1.ballWasHit){
+            this.velY = this.speedMultiplier * p1.returnBounceAngle();
+            player1.ballWasHit = true;
+            player2.ballWasHit = false;
+            return true;
+        }else if(this.posX >= p2.posX && this.posY > p2.posY && this.posY < p2.posY + p2.paddleHeight && !p2.ballWasHit){
+            this.velY = this.speedMultiplier * p2.returnBounceAngle();
+            player1.ballWasHit = false;
+            player2.ballWasHit = true;
+            return true;
+        }else{
+            return false;
+        }
+
+    },
+    updateBall: function(){
+        if(this.checkCollisionWall()){
+            this.velY *= -1;
+        }
+        if(this.checkCollisionPaddle(player1,player2)){
+            this.direction *= -1;
+            this.velX = Math.abs(this.velX) * this.direction;
+            if(Math.abs(this.velX) < this.speedCap){
+                this.velX *= this.speedMultiplier;
+            }else{
+                this.velX = this.speedCap;
+            }
+        }
+        this.posX += this.velX;
+        this.posY += this.velY;
+
+    },
+    drawBall: function(){
+        this.updateBall();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.arc(this.posX,this.posY, this.radius,0,Math.PI*2,false);
+        ctx.fill();
+    }
+};
+
 //Prototype Object for the paddle
 function Paddle(player, scorePositionX){
     this.player = player;
     this.paddleHeight = 100;
-    this.paddleWidth = 10;
+    this.paddleWidth = 15;
     this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth;
     this.posY = windowHeight/2 - this.paddleHeight/2;
     this.velY = 5;
@@ -128,6 +130,8 @@ function Paddle(player, scorePositionX){
     this.score = 0;
     this.paddleSegmentHeight = this.paddleHeight/10;
     this.scorePositionX = scorePositionX;
+    this.maxMovementPerInterval = 5;
+    this.posYLastInterval = this.posY;
     this.ballWasHit = false;
     this.returnBounceAngle = function(){
         for(var i = 0, height = this.paddleSegmentHeight; i < 10; i++, height+=this.paddleSegmentHeight){
@@ -149,7 +153,19 @@ function Paddle(player, scorePositionX){
             this.posY = windowHeight - this.paddleHeight;
         }
     };
-
+    this.movePaddle = function(cursorPos){
+        var movement =  cursorPos - this.posYLastInterval;
+        if(Math.abs(movement) > this.maxMovementPerInterval){
+            if(movement > 0){
+                this.posY += this.maxMovementPerInterval;
+            }else{
+                this.posY -= this.maxMovementPerInterval;
+            }
+        }else{
+            this.posY = cursorPos;
+        }
+        this.posYLastInterval = this.posY;
+    };
     this.drawPaddle = function(){
         if (this.isMovingDown) {
             this.posY += this.velY;
@@ -215,36 +231,34 @@ function checkGameOver(){
 
 //Old button technique
 socket.on('player1 down', function(data){
-    player1.isMovingDown = (data && !player1.isMovingDown) ? true : false;
+    player1.isMovingDown = (data && !player1.isMovingDown);
 });
 socket.on('player2 down', function(data){
-    player2.isMovingDown = (data && !player2.isMovingDown) ? true : false;
+    player2.isMovingDown = (data && !player2.isMovingDown);
 });
 socket.on('player1 up', function(data){
-    player1.isMovingUp = (data && !player1.isMovingUp) ? true : false;
+    player1.isMovingUp = (data && !player1.isMovingUp);
 });
 socket.on('player2 up', function(data){
-    player2.isMovingUp = (data && !player2.isMovingUp) ? true : false;
+    player2.isMovingUp = (data && !player2.isMovingUp);
 });
 
 
 
 
 //New touch technique
-socket.on('player 1 touch', function(positionYPercentage){
-    player1.posY = positionYPercentage * windowHeight;
-});
-socket.on('player 2 touch', function(positionYPercentage){
-    player2.posY = positionYPercentage * windowHeight;
-});
-socket.on('start ball', function(data){
-    if(data){
-        if(!running){
-            ball.startBall();
-            socket.emit('start ball', false);
-        }
-    }
-});
+// socket.on('player 1 touch', function(positionYPercentage){
+//     player1.movePaddle(positionYPercentage * windowHeight);
+// });
+// socket.on('player 2 touch', function(positionYPercentage){
+//     player2.posY = positionYPercentage * windowHeight;
+// });
+// socket.on('start ball', function(data){
+//     if(data && !running){
+//         ball.startBall();
+//         socket.emit('start ball', false);
+//     }
+// });
 
 //#######################DEBUG#########################
 $(document).keydown(function(e){
@@ -283,6 +297,18 @@ $(document).keydown(function(e){
 });
 ball.start();
 setInterval(function(){
+    socket.on('player 1 touch', function(positionYPercentage){
+        player1.movePaddle(positionYPercentage * windowHeight);
+    });
+    socket.on('player 2 touch', function(positionYPercentage){
+        player2.movePaddle(positionYPercentage * windowHeight);
+    });
+    socket.on('start ball', function(data){
+        if(data && !running){
+            ball.startBall();
+            socket.emit('start ball', false);
+        }
+    });
     redraw();
     checkGameOver();
 },1000/60);
