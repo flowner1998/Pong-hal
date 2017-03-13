@@ -1,6 +1,6 @@
 //Global Variables
-var windowWidth = window.innerWidth,
-    windowHeight= window.innerHeight,
+var windowWidth = 1920,
+    windowHeight= 1080,
     canvas = document.getElementById('game'),
     ctx = canvas.getContext('2d'),
     player1 = new Paddle(1, windowWidth / 4),
