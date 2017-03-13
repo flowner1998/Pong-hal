@@ -27,7 +27,6 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-<h1>Welkom!</h1>
     <script type="text/javascript">
         $(function(){
             var socket = io.connect();
@@ -50,7 +49,6 @@
                 }
 
                 var positionYPercentage = y / windowHeight;
-    //                console.log('y perc', positionYPercentage);
 
                 socket.emit('player 2 touch', positionYPercentage);
             });
@@ -63,7 +61,5 @@
             })
         });
     </script>
-<!--<button id="up" >Up</button>-->
-    <!--<button id="down" >Down</button>-->
 </body>
 </html>

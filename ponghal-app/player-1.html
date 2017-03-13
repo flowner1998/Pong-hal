@@ -27,7 +27,7 @@
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-<h1>Welkom</h1>
+<h1 id="mobileInfo"></h1>
     <script type="text/javascript">
         $(function(){
             var socket = io.connect();
@@ -48,7 +48,6 @@
                 }
 
                 var positionYPercentage = y / windowHeight;
-    //                console.log('y perc', positionYPercentage);
 
                 socket.emit('player 1 touch', positionYPercentage);
             });
@@ -61,7 +60,19 @@
             })
         });
     </script>
-<!--<button id="up" >Up</button>-->
-    <!--<button id="down" >Down</button>-->
+    <script>
+        function detectmob() {
+            return  navigator.userAgent.match(/webOS/i)
+                || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPad/i)
+                || navigator.userAgent.match(/iPod/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/Windows Phone/i);
+        }
+        if(detectmob()){
+            var mobile = document.getElementById('mobileInfo');
+            mobile.innerHTML = "Mobile is not capable of playing the game currently";
+        }
+    </script>
 </body>
 </html>
