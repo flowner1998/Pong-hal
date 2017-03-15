@@ -207,10 +207,10 @@ function resetGame(loserPlayer){
     ball.velX = ball.velY = 0;
     if(loserPlayer == 1){
         ball.posX = player1.posX + player1.paddleWidth + ball.radius;
-        ball.posY = player1.posY + player1.paddleHeight/2 - ball.radius/2;
+        ball.posY = player1.posY + player1.paddleHeight/2 - ball.radius;
     }else{
         ball.posX = player2.posX - ball.radius;
-        ball.posY = player2.posY + player2.paddleHeight/2 - ball.radius/2;
+        ball.posY = player2.posY + player2.paddleHeight/2 - ball.radius;
     }
 }
 function checkGameOver(){
