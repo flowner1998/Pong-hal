@@ -105,7 +105,6 @@ var ball = {
                 this.velX = this.speedCap;
             }
         }
-        console.log(this.velX);
         this.posX += this.velX;
         this.posY += this.velY;
 
