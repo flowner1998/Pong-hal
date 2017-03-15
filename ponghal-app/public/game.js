@@ -137,7 +137,7 @@ function Paddle(player, scorePositionX){
     this.returnBounceAngle = function(){
         for(var i = 0, height = this.paddleSegmentHeight; i < 10; i++, height+=this.paddleSegmentHeight){
             if(ball.posY >= (this.posY + height - this.paddleSegmentHeight) && ball.posY <= (this.posY + height)){
-                return ball.bounceAngle[i];
+                return ball.bounceAngle[i] * (1 + Math.abs(ball.velX)/10);
             }
         }
         console.log('critical error, could not calculate bounce angle');
