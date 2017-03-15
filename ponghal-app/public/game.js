@@ -13,8 +13,8 @@ var windowWidth = window.innerWidth,
 function createCanvas(){
     canvas.width = windowWidth;
     canvas.height = windowHeight;
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0,0,windowWidth,windowHeight);
+    //ctx.fillStyle = '#000000';
+    //ctx.fillRect(0,0,windowWidth,windowHeight);
 
     drawNet();
 }
@@ -49,7 +49,7 @@ var ball = {
     direction: 0,
     speedMultiplier: 1.1,
     speedCap: 30,
-    bounceAngle: [-5,-4,-3,-2,-1,1,2,3,4,5],
+    bounceAngle: [-4,-3.5,-3,-2,-1,1,2,3,3.5,4],
     start: function(){
         switch(startingPlayer){
             case 1:
@@ -105,6 +105,7 @@ var ball = {
                 this.velX = this.speedCap;
             }
         }
+        console.log(this.velX);
         this.posX += this.velX;
         this.posY += this.velY;
 
@@ -137,13 +138,13 @@ function Paddle(player, scorePositionX){
     this.returnBounceAngle = function(){
         for(var i = 0, height = this.paddleSegmentHeight; i < 10; i++, height+=this.paddleSegmentHeight){
             if(ball.posY >= (this.posY + height - this.paddleSegmentHeight) && ball.posY <= (this.posY + height)){
-                return ball.bounceAngle[i];
+                return ball.bounceAngle[i] * (1 + Math.abs(ball.velX)/10);
             }
         }
         console.log('critical error, could not calculate bounce angle');
     };
     this.resetPaddle = function(){
-        this.posY = windowHeight/2 - this.paddleHeight;
+        this.posY = windowHeight/2 - this.paddleHeight/2;
         this.ballWasHit = false;
     };
     this.checkBoundary = function(){
@@ -215,10 +216,10 @@ function resetGame(loserPlayer){
     ball.velX = ball.velY = 0;
     if(loserPlayer == 1){
         ball.posX = player1.posX + player1.paddleWidth + ball.radius;
-        ball.posY = player1.posY + player1.paddleHeight/2;
+        ball.posY = player1.posY + player1.paddleHeight/2 - ball.radius;
     }else{
         ball.posX = player2.posX - ball.radius;
-        ball.posY = player2.posY + player2.paddleHeight/2;
+        ball.posY = player2.posY + player2.paddleHeight/2 - ball.radius;
     }
 }
 function checkGameOver(){
