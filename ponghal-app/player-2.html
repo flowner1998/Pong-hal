@@ -36,6 +36,8 @@
     <div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="true" onlogin="checkLoginState();" onlogout="checkLoginState();"></div>
 
     <div id="status"></div>
+
+    <img id="guide" src="public/img/ponghal-guide.png" class="hidden" />
 </main>
 
 <script>
@@ -66,8 +68,16 @@
     }
 
     window.fbAsyncInit = function() {
+        var appId;
+
+        if (inDevelopment) {
+            appId = '1018444101588462';
+        } else {
+            appId = '211652732647191'
+        }
+
         FB.init({
-            appId      : '211652732647191',
+            appId      : appId,
             cookie     : true,  // enable cookies to allow the server to access
                                 // the session
             xfbml      : true,  // parse social plugins on this page
@@ -92,9 +102,10 @@
         FB.api('/me', function(response) {
             console.log('Successful login for: ' + response.name);
             document.getElementById('status').innerHTML =
-                'Thanks for logging in, ' + response.name + '!';
+                'Welcome ' + response.name + ', have fun playing Ponghal!';
             isLoggedIn = true;
             socket.emit('player 2 connect', {name: response.name});
+            $("#guide").fadeIn(300);
         });
     }
 </script>

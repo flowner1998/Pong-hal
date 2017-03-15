@@ -24,7 +24,7 @@ main{
     height: 100%;
 }
 #game{
-    background: #000000 url('../img/laptop.png') no-repeat;
+    background: url('../img/laptop.png') no-repeat;
     background-size: cover;
 }
 
@@ -43,5 +43,13 @@ main{
 }
 
 #status {
-    margin-top: 20px;
+    margin: 20px 0px;
+}
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    visibility: visible;
 }
