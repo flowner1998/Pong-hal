@@ -13,8 +13,8 @@ var windowWidth = window.innerWidth,
 function createCanvas(){
     canvas.width = windowWidth;
     canvas.height = windowHeight;
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0,0,windowWidth,windowHeight);
+    //ctx.fillStyle = '#000000';
+    //ctx.fillRect(0,0,windowWidth,windowHeight);
 
     drawNet();
 }
@@ -105,6 +105,7 @@ var ball = {
                 this.velX = this.speedCap;
             }
         }
+        console.log(this.velX);
         this.posX += this.velX;
         this.posY += this.velY;
 
@@ -142,7 +143,7 @@ function Paddle(player, scorePositionX){
         console.log('critical error, could not calculate bounce angle');
     };
     this.resetPaddle = function(){
-        this.posY = windowHeight/2 - this.paddleHeight;
+        this.posY = windowHeight/2 - this.paddleHeight/2;
         this.ballWasHit = false;
     };
     this.checkBoundary = function(){
@@ -179,7 +180,6 @@ function Paddle(player, scorePositionX){
     };
 
     this.drawScore = function () {
-        console.log("draw");
         ctx.font = "60px squarefont";
         ctx.fillStyle = 'white';
         ctx.fillText(this.score, this.scorePositionX, 150);

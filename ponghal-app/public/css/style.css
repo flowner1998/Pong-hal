@@ -23,6 +23,10 @@ main{
     width: 100%;
     height: 100%;
 }
+#game{
+    background: #000000 url('../img/laptop.png') no-repeat;
+    background-size: cover;
+}
 
 .player {
     padding-top: 20px;
