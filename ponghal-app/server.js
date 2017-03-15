@@ -22,15 +22,10 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/public', express.static('public'));
 
-app.get('/arduino', function(){
+app.get('/arduino', function(req, res){
     res.sendFile('arduino-start.html', {root: __dirname});
 });
 
-app.post('/arduino',function(){
-    res.sendFile('arduino-start', {root: __dirname});
-    var data = true;
-    io.emit('start ball', data);
-});
 
 app.get('/arduino-player-1.html', function(req, res){
     res.sendfile('arduino-player-1.html', {root: __dirname});
