@@ -120,6 +120,7 @@ var ball = {
 //Prototype Object for the paddle
 function Paddle(player, scorePositionX){
     this.player = player;
+    this.name = "";
     this.paddleHeight = 100;
     this.paddleWidth = 15;
     this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth;
@@ -179,10 +180,15 @@ function Paddle(player, scorePositionX){
     };
 
     this.drawScore = function () {
-        console.log("draw");
         ctx.font = "60px squarefont";
         ctx.fillStyle = 'white';
-        ctx.fillText(this.score, this.scorePositionX, 150);
+        ctx.fillText(this.score, this.scorePositionX - (ctx.measureText(this.score).width / 2), 150);
+    }
+
+    this.drawName = function () {
+        ctx.font = "40px squarefont";
+        ctx.fillStyle = 'white';
+        ctx.fillText(this.name, this.scorePositionX - (ctx.measureText(this.name).width / 2), 70);
     }
 }
 
@@ -194,8 +200,10 @@ function redraw(){
     createCanvas();
     player1.drawPaddle();
     player1.drawScore();
+    player1.drawName();
     player2.drawPaddle();
     player2.drawScore();
+    player2.drawName();
     if(!running){
         ball.start();
     }
@@ -297,11 +305,11 @@ $(document).keydown(function(e){
 });
 ball.start();
 setInterval(function(){
-    socket.on('player 1 touch', function(positionYPercentage){
-        player1.movePaddle(positionYPercentage * windowHeight);
+    socket.on('player 1 touch', function(data){
+        player1.movePaddle(data.y * windowHeight);
     });
-    socket.on('player 2 touch', function(positionYPercentage){
-        player2.movePaddle(positionYPercentage * windowHeight);
+    socket.on('player 2 touch', function(data){
+        player2.movePaddle(data.y * windowHeight);
     });
     socket.on('start ball', function(data){
         if(data && !running){
@@ -312,3 +320,22 @@ setInterval(function(){
     redraw();
     checkGameOver();
 },1000/60);
+
+socket.on('player 1 connect', function(data){
+    player1.name = data.name;
+});
+
+socket.on('player 1 disconnect', function(){
+    player1.name = "";
+    player1.posY = windowHeight/2 - player1.paddleHeight/2;
+});
+
+socket.on('player 2 connect', function(data){
+    player2.name = data.name;
+    console.log("CONN" + data.name);
+});
+
+socket.on('player 2 disconnect', function(){
+    player2.name = "";
+    player2.posY = windowHeight/2 - player2.paddleHeight/2;
+});

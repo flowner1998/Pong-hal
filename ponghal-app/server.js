@@ -66,35 +66,35 @@ app.get('/player-2', function(req, res){
  */
 
 io.on('connection', function(socket){
-  socket.on('disconnect', function(){
+    socket.on('disconnect', function(){
 
-  });
+    });
+
+    socket.on('player 1 connect', function (data) {
+        io.emit('player 1 connect', data);
+    });
+
+    socket.on('player 1 disconnect', function () {
+        io.emit('player 1 disconnect');
+    });
 
     socket.on('player 1 touch', function (data) {
         console.log('player 1 touch: ' + data);
         io.emit('player 1 touch', data);
     });
+
+    socket.on('player 2 connect', function (data) {
+        io.emit('player 2 connect', data);
+    });
+
+    socket.on('player 2 disconnect', function () {
+        io.emit('player 2 disconnect');
+    });
+
     socket.on('player 2 touch', function (data) {
         console.log('player 2 touch: ' + data);
         io.emit('player 2 touch', data);
     });
-    socket.on('player1 up', function (data) {
-        console.log('player1 up: ' + data);
-        io.emit('player1 up', data);
-    });
-    socket.on('player1 down', function (data) {
-        console.log('player1 down: ' + data);
-        io.emit('player1 down', data);
-    });
-    socket.on('player2 up', function (data) {
-        console.log('player2 up: ' + data);
-        io.emit('player2 up', data);
-    });
-    socket.on('player2 down', function (data) {
-        console.log('player2 down: ' + data);
-        io.emit('player2 down', data);
-    });
-
 });
 
 server.listen(300, function(){

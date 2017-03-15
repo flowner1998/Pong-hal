@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pong Controller Player 2</title>
+    <title>Pong Controller Player 1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="public/css/style.css">
 
     <style>
         * {
@@ -12,8 +13,8 @@
         }
 
         html, body {
-            touch-action: none;
             height: 100%;
+            touch-action: none;
         }
 
         button {
@@ -25,41 +26,120 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="public/js/development-manager.js"></script>
 </head>
 <body>
-    <script type="text/javascript">
-        $(function(){
-            var socket = io.connect();
-            var windowHeight = window.outerHeight;
+<h1 id="mobileInfo"></h1>
+<main class="player">
+    <h1>PONGHAL</h1>
 
+    <div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="true" onlogin="checkLoginState();" onlogout="checkLoginState();"></div>
 
-            $(window).on('mousemove touchmove', function(e){
-                e.preventDefault();
-                console.log(e);
+    <div id="status"></div>
+</main>
 
-                var y = 0;
-                var touch = undefined;
+<script>
 
-                if (e.originalEvent.touches) {
-                    touch = e.originalEvent.touches[0];
-                    y = touch.pageY;
+    var socket = io.connect();
+    var isLoggedIn = false;
+    var name = "";
 
-                } else {
-                    y = e.pageY;
-                }
+    function statusChangeCallback(response) {
+        console.log('statusChangeCallback');
+        console.log(response);
+        if (response.status === 'connected') {
+            // Logged into your app and Facebook.
+            testAPI();
+        } else {
+            // The person is not logged into your app or we are unable to tell.
+            document.getElementById('status').innerHTML = 'Please log ' +
+                'into this app.';
+            socket.emit('player 2 disconnect');
+            isLoggedIn = false;
+        }
+    }
 
-                var positionYPercentage = y / windowHeight;
-
-                socket.emit('player 2 touch', positionYPercentage);
-            });
-
-            $('button').on('mousedown touchstart', function(){
-                socket.emit('player2 ' + $(this).attr('id'), true);
-            });
-            $('button').on('mouseup touchend', function(){
-                socket.emit('player2 ' + $(this).attr('id'), false)
-            })
+    function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
         });
-    </script>
+    }
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '211652732647191',
+            cookie     : true,  // enable cookies to allow the server to access
+                                // the session
+            xfbml      : true,  // parse social plugins on this page
+            version    : 'v2.8' // use graph api version 2.8
+        });
+
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+    };
+
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    function testAPI() {
+        console.log('Welcome!  Fetching your information.... ');
+        FB.api('/me', function(response) {
+            console.log('Successful login for: ' + response.name);
+            document.getElementById('status').innerHTML =
+                'Thanks for logging in, ' + response.name + '!';
+            isLoggedIn = true;
+            socket.emit('player 2 connect', {name: response.name});
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    $(function(){
+        var windowHeight = window.outerHeight;
+
+        $(window).on('mousemove touchmove', function(e){
+            e.preventDefault();
+
+            var y = 0;
+            var touch = undefined;
+
+            if (e.originalEvent.touches) {
+                touch = e.originalEvent.touches[0];
+                y = touch.pageY;
+            } else {
+                y = e.pageY;
+            }
+
+            var positionYPercentage = y / windowHeight;
+
+//                console.log(positionYPercentage);
+//                console.log(name);
+
+            if (isLoggedIn || inDevelopment) {
+                socket.emit('player 2 touch', {y: positionYPercentage});
+            }
+        });
+    });
+</script>
+<script>
+    function detectmob() {
+        return  navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i);
+    }
+    if(detectmob()){
+        var mobile = document.getElementById('mobileInfo');
+        mobile.innerHTML = "Mobile is not capable of playing the game currently";
+    }
+</script>
 </body>
 </html>

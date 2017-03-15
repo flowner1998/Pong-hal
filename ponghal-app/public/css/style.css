@@ -35,5 +35,9 @@ main{
 }
 
 .player .fb-login-button {
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
+}
+
+#status {
+    margin-top: 20px;
 }
