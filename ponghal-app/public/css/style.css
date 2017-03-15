@@ -23,3 +23,17 @@ main{
     width: 100%;
     height: 100%;
 }
+
+.player {
+    padding-top: 20px;
+    text-align: center;
+}
+
+.player h1 {
+    margin-bottom: 20px;
+    font-size: 70px;
+}
+
+.player .fb-login-button {
+    margin-bottom: 20px;
+}
