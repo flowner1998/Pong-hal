@@ -49,7 +49,7 @@ var ball = {
     direction: 0,
     speedMultiplier: 1.1,
     speedCap: 30,
-    bounceAngle: [-5,-4,-3,-2,-1,1,2,3,4,5],
+    bounceAngle: [-4,-3.5,-3,-2,-1,1,2,3,3.5,4],
     start: function(){
         switch(startingPlayer){
             case 1:
