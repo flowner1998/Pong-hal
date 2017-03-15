@@ -23,13 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/public', express.static('public'));
 
 app.get('/arduino', function(){
-    socket.on('light on', function(data){
-        if(data){
-            res.sendFile('arduino-lightOn', {root: __dirname});
-        }else{
-            res.sendFile('arduino-idle', {root: __dirname});
-        }
-    });
+    res.sendFile('arduino-start.html', {root: __dirname});
 });
 
 app.post('/arduino',function(){
@@ -41,7 +35,6 @@ app.post('/arduino',function(){
 app.get('/arduino-player-1.html', function(req, res){
     res.sendfile('arduino-player-1.html', {root: __dirname});
     var data = true;
-    io.emit('start ball', data);
 });
 app.get('/arduino-player-2.html', function(req, res){
     res.sendfile('arduino-player-2.html', {root: __dirname});
@@ -66,8 +59,11 @@ app.get('/player-2', function(req, res){
  */
 
 io.on('connection', function(socket){
-    socket.on('disconnect', function(){
+  socket.on('disconnect', function(){
 
+    });
+    socket.on('start ball', function (data) {
+        io.emit('start ball', data);
     });
 
     socket.on('player 1 connect', function (data) {
@@ -95,6 +91,23 @@ io.on('connection', function(socket){
         console.log('player 2 touch: ' + data);
         io.emit('player 2 touch', data);
     });
+    socket.on('player1 up', function (data) {
+        console.log('player1 up: ' + data);
+        io.emit('player1 up', data);
+    });
+    socket.on('player1 down', function (data) {
+        console.log('player1 down: ' + data);
+        io.emit('player1 down', data);
+    });
+    socket.on('player2 up', function (data) {
+        console.log('player2 up: ' + data);
+        io.emit('player2 up', data);
+    });
+    socket.on('player2 down', function (data) {
+        console.log('player2 down: ' + data);
+        io.emit('player2 down', data);
+    });
+
 });
 
 server.listen(300, function(){
