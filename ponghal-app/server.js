@@ -79,7 +79,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 1 touch', function (data) {
-        console.log('player 1 touch: ' + data);
+        // console.log('player 1 touch: ' + data);
         io.emit('player 1 touch', data);
     });
 
@@ -92,7 +92,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 2 touch', function (data) {
-        console.log('player 2 touch: ' + data);
+        // console.log('player 2 touch: ' + data);
         io.emit('player 2 touch', data);
     });
 });

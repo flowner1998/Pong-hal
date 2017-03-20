@@ -105,7 +105,7 @@ var ball = {
                 this.velX = this.speedCap;
             }
         }
-        console.log(this.velX);
+        // console.log(this.velX);
         this.posX += this.velX;
         this.posY += this.velY;
 
@@ -333,7 +333,7 @@ socket.on('player 1 disconnect', function(){
 
 socket.on('player 2 connect', function(data){
     player2.name = data.name;
-    console.log("CONN" + data.name);
+    // console.log("CONN" + data.name);
 });
 
 socket.on('player 2 disconnect', function(){
