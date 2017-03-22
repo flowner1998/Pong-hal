@@ -1,6 +1,6 @@
 //Global Variables
 var windowWidth = window.innerWidth,
-    windowHeight= window.innerHeight,
+    windowHeight = window.innerHeight,
     canvas = document.getElementById('game'),
     ctx = canvas.getContext('2d'),
     player1 = new Paddle(1, windowWidth / 4),
@@ -9,16 +9,24 @@ var windowWidth = window.innerWidth,
     startingPlayer = Math.floor(Math.random()*2 + 1);
     socket = io.connect();
 
-//Function to create the canvas
+/**
+ * Creates canvas
+ * It sets the width and height of the canvas
+ * it draws scores, names and the net.
+ */
 function createCanvas(){
     canvas.width = windowWidth;
     canvas.height = windowHeight;
-    //ctx.fillStyle = '#000000';
-    //ctx.fillRect(0,0,windowWidth,windowHeight);
-
+    player1.drawScore();
+    player1.drawName();
+    player2.drawScore();
+    player2.drawName();
     drawNet();
 }
 
+/**
+ * Function that draws the net
+ */
 function drawNet () {
     var netWidth = 5;
     var netHeight = 30;
@@ -39,17 +47,23 @@ function drawNet () {
     }
 }
 
-//object for the ball
+/**
+ * Object for the ball
+ *
+ */
 var ball = {
-    radius: 5,
-    posX: 0,
-    posY: windowHeight/2,
-    velX: 0,
-    velY: 0,
-    direction: 0,
-    speedMultiplier: 1.1,
-    speedCap: 30,
-    bounceAngle: [-4,-3.5,-3,-2,-1,1,2,3,3.5,4],
+    radius: 5, //radius of the ball (in pixels)
+    posX: 0, //x Coordinate (in pixels)
+    posY: 0, //y Coordinate (in pixels)
+    velX: 0, //Velocity along the x-axis (in pixels per frame)
+    velY: 0, //Velocity along the y-axis (in pixels per frame)
+    direction: 0, //Current direction the ball is going (either 1 or -1)
+    speedMultiplier: 1.1, //Variable stored to make the ball slower or faster
+    speedCap: 30, //Maximum speed (in pixels per frame)
+    bounceAngle: [-4,-3.5,-3,-2,-1,1,2,3,3.5,4], //Array stored to return a bounce angle dependent on where the ball hit the paddle
+    /**
+     * Fuction to Reset the position of the ball and sets the direction
+     */
     start: function(){
         switch(startingPlayer){
             case 1:
@@ -64,6 +78,10 @@ var ball = {
                 break;
         }
     },
+
+    /**
+     * Function to give the ball velocity after the start button is pressed
+     */
     startBall: function(){
         var yVelocity = 0;
         while(yVelocity  == 0){
@@ -74,8 +92,20 @@ var ball = {
         this.velY = yVelocity;
         running = true;
     },
+
+    /**
+     * Function to check if there is collision with the ceiling or floor
+     */
     checkCollisionWall: function(){
-        return((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2)},
+        return((this.posY > (windowHeight - this.radius*2)) || this.posY < this.radius*2)
+    },
+
+    /**
+     * Function to check collision with the paddles
+     * @param p1 {object} player 1
+     * @param p2 {object} player 2
+     * @returns {boolean}
+     */
     checkCollisionPaddle: function(p1, p2){
         if(this.posX <= p1.posX + p1.paddleWidth && this.posY >= p1.posY && this.posY <= p1.posY + p1.paddleHeight && !p1.ballWasHit){
             this.velY = this.speedMultiplier * p1.returnBounceAngle();
@@ -92,6 +122,11 @@ var ball = {
         }
 
     },
+
+    /**
+     * Function to call every frame
+     * Does all the logic for the ball
+     */
     updateBall: function(){
         if(this.checkCollisionWall()){
             this.velY *= -1;
@@ -110,6 +145,10 @@ var ball = {
         this.posY += this.velY;
 
     },
+
+    /**
+     * Function to draw the ball on the canvas
+     */
     drawBall: function(){
         this.updateBall();
         ctx.fillStyle = '#FFFFFF';
@@ -118,23 +157,33 @@ var ball = {
     }
 };
 
-//Prototype Object for the paddle
+/**
+ * Object for the Paddles
+ * @param player
+ * @param scorePositionX
+ * @constructor
+ */
 function Paddle(player, scorePositionX){
-    this.player = player;
-    this.name = "";
-    this.paddleHeight = 100;
-    this.paddleWidth = 15;
-    this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth;
-    this.posY = windowHeight/2 - this.paddleHeight/2;
-    this.velY = 5;
-    this.isMovingDown = false;
-    this.isMovingUp = false;
-    this.score = 0;
-    this.paddleSegmentHeight = this.paddleHeight/10;
-    this.scorePositionX = scorePositionX;
-    this.maxMovementPerInterval = 5;
-    this.posYLastInterval = this.posY;
-    this.ballWasHit = false;
+    this.player = player; //Player that controls the paddle
+    this.name = ""; //Name assigned to the paddle
+    this.paddleHeight = 100; //height of the paddle (in pixels)
+    this.paddleWidth = 15; //width of the paddle (in pixels)
+    this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth; //x coordinate of the paddle (in pixels)
+    this.posY = windowHeight/2 - this.paddleHeight/2; // y Coordinate of the paddle (in pixels)
+    this.velY = 5; //Velocity along the y-axis (in pixels per second) DEPRECATED
+    this.isMovingDown = false; //DEPRECATED
+    this.isMovingUp = false;//DEEPRECATED
+    this.score = 0; //Current score of the player
+    this.paddleSegmentHeight = this.paddleHeight/10; //The height of a single bounce segment from the paddle
+    this.scorePositionX = scorePositionX; //X position to draw the score on
+    this.maxMovementPerInterval = 5; //Maximum movement per frame (needs fixing, might just do that controller sided)
+    this.posYLastInterval = this.posY; //Position last frame
+    this.ballWasHit = false; // To avoid ball bouncing inside of the paddle
+
+    /**
+     * Function to return the angle of the ball to bounce back with
+     * @returns {number}
+     */
     this.returnBounceAngle = function(){
         for(var i = 0, height = this.paddleSegmentHeight; i < 10; i++, height+=this.paddleSegmentHeight){
             if(ball.posY >= (this.posY + height - this.paddleSegmentHeight) && ball.posY <= (this.posY + height)){
@@ -143,6 +192,10 @@ function Paddle(player, scorePositionX){
         }
         console.log('critical error, could not calculate bounce angle');
     };
+
+    /**
+     * Function to reset paddle position and ball Hit
+     */
     this.resetPaddle = function(){
         this.posY = windowHeight/2 - this.paddleHeight/2;
         this.ballWasHit = false;
@@ -169,12 +222,14 @@ function Paddle(player, scorePositionX){
         this.posYLastInterval = this.posY;
     };
     this.drawPaddle = function(){
+        /* -Deprecated use of moving the paddle up and down
         if (this.isMovingDown) {
             this.posY += this.velY;
         }
         if (this.isMovingUp) {
             this.posY -= this.velY;
         }
+        */
         this.checkBoundary();
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(this.posX, this.posY, this.paddleWidth, this.paddleHeight);

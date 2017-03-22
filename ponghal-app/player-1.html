@@ -43,7 +43,7 @@
 <script>
 
     var socket = io.connect();
-    var isLoggedIn = false;
+    var isLoggedIn = true;
     var name = "";
 
     function statusChangeCallback(response) {
@@ -69,7 +69,11 @@
 
     window.fbAsyncInit = function() {
         var appId;
-
+        var player = {
+            name: '',
+            fbId: 0,
+            country: ''
+        }
         if (inDevelopment) {
             appId = '1018444101588462';
         } else {
