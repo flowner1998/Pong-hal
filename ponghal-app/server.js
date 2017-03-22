@@ -7,14 +7,13 @@
 /*##################################################################################*/
 /**
  * Including Node Package Modules
- * !REQUIRED ON FOLDER IS "npm install" & "npm install johnny-five"!
+ * !REQUIRED ON FOLDER IS "npm install"!
  */
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var bodyParser = require("body-parser");
-//var five = require("jonny-five");//Including johnny-five module for the Arduino compatibility
 
 /**
  * Server sending files to a client
@@ -26,18 +25,11 @@ app.get('/arduino', function(req, res){
     res.sendFile('arduino-start.html', {root: __dirname});
 });
 
-
-app.get('/arduino-player-1.html', function(req, res){
-    res.sendfile('arduino-player-1.html', {root: __dirname});
-    var data = true;
-});
-app.get('/arduino-player-2.html', function(req, res){
-    res.sendfile('arduino-player-2.html', {root: __dirname});
-    var data = true;
-    io.emit('start ball', data);
-});
 app.get('/', function(req, res){
 	res.sendFile('index.html', {root: __dirname});
+});
+app.get('/game', function(req, res){
+    res.sendFile('game.html', {root: __dirname});
 });
 
 app.get('/player-1', function(req, res){
@@ -70,7 +62,6 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 1 touch', function (data) {
-        // console.log('player 1 touch: ' + data);
         io.emit('player 1 touch', data);
     });
 
@@ -83,26 +74,8 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 2 touch', function (data) {
-        // console.log('player 2 touch: ' + data);
         io.emit('player 2 touch', data);
     });
-    socket.on('player1 up', function (data) {
-        console.log('player1 up: ' + data);
-        io.emit('player1 up', data);
-    });
-    socket.on('player1 down', function (data) {
-        console.log('player1 down: ' + data);
-        io.emit('player1 down', data);
-    });
-    socket.on('player2 up', function (data) {
-        console.log('player2 up: ' + data);
-        io.emit('player2 up', data);
-    });
-    socket.on('player2 down', function (data) {
-        console.log('player2 down: ' + data);
-        io.emit('player2 down', data);
-    });
-
 });
 
 server.listen(300, function(){
