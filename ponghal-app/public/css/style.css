@@ -20,10 +20,10 @@ body{
 }
 main{
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
 }
-#game{
+#game, #highscores{
     background: url('../img/laptop.png') no-repeat;
     background-size: cover;
 }
@@ -52,4 +52,48 @@ main{
 
 .visible {
     visibility: visible;
+}
+/*
+HIGHSCORE STUFF
+ */
+table#table-highscores{
+    border-collapse: separate;
+    margin: auto;
+    width: 60%;
+    color: #FFFFFF;
+}
+table caption{
+    margin: 20px 0;
+}
+table thead{
+    font-size: 2em;
+}
+table tbody{
+    font-size: 1.5em;
+}
+table tfoot{
+
+}
+
+td, th{
+    text-align: center;
+}
+
+.highscores.rank{
+    text-align: center;
+    font-weight: bold;
+}
+.highscores.flag{
+    text-align: right;
+}
+.highscores.flag img{
+    height: 30px;
+}
+.highscores.country{
+    text-align: left;
+    padding-left: 20px;
+}
+.highscores.score{
+    text-align: center;
+    font-weight: bold;
 }

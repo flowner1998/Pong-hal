@@ -31,7 +31,9 @@ app.get('/', function(req, res){
 app.get('/game', function(req, res){
     res.sendFile('game.html', {root: __dirname});
 });
-
+app.get('/highscores',function(req, res){
+    res.sendFile('highscores.html', {root: __dirname});
+});
 app.get('/player-1', function(req, res){
     res.sendFile('player-1.html', {root: __dirname});
 });

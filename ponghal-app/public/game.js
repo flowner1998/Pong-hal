@@ -105,7 +105,7 @@ var ball = {
             this.velY = this.speedMultiplier * p2.returnBounceAngle();
             player1.ballWasHit = false;
             player2.ballWasHit = true;
-            this.posX = p2.posX - this.radius;
+            this.posX = p2.posX - this.radius*2;
             return true;
         }else{
             return false;
@@ -342,7 +342,7 @@ function checkGameOver(){
             var protocol = location.protocol;
             var port = location.port ? location.port : "";
             var host = protocol + "//" +  window.location.hostname + ":" + port;
-            var page = "";
+            var page = "highscores";
             window.location = host + "/" + page;
         }, 5000);
 
