@@ -6,6 +6,8 @@ var windowWidth = window.innerWidth,
     player1 = new Paddle(1, windowWidth / 4),
     player2 = new Paddle(2, (windowWidth / 4) * 3),
     running = false,
+    winScore = 1,
+    winner = null,
     startingPlayer = Math.floor(Math.random()*2 + 1);
     socket = io.connect();
 
@@ -17,10 +19,6 @@ var windowWidth = window.innerWidth,
 function createCanvas(){
     canvas.width = windowWidth;
     canvas.height = windowHeight;
-    player1.drawScore();
-    player1.drawName();
-    player2.drawScore();
-    player2.drawName();
     drawNet();
 }
 
@@ -159,13 +157,15 @@ var ball = {
 
 /**
  * Object for the Paddles
- * @param player
- * @param scorePositionX
+ * @param player {number}
+ * @param scorePositionX {number}
  * @constructor
  */
 function Paddle(player, scorePositionX){
     this.player = player; //Player that controls the paddle
     this.name = ""; //Name assigned to the paddle
+    this.fbId = 0; //Facebook ID of the player
+    this.country = ""; //Country of the player
     this.paddleHeight = 100; //height of the paddle (in pixels)
     this.paddleWidth = 15; //width of the paddle (in pixels)
     this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth; //x coordinate of the paddle (in pixels)
@@ -200,6 +200,10 @@ function Paddle(player, scorePositionX){
         this.posY = windowHeight/2 - this.paddleHeight/2;
         this.ballWasHit = false;
     };
+
+    /**
+     * Function to prevent the paddle from going out of bounds
+     */
     this.checkBoundary = function(){
         if(this.posY <= 0){
             this.posY = 0;
@@ -208,6 +212,11 @@ function Paddle(player, scorePositionX){
             this.posY = windowHeight - this.paddleHeight;
         }
     };
+
+    /**
+     * Function to move the paddle
+     * @param cursorPos
+     */
     this.movePaddle = function(cursorPos){
         var movement =  cursorPos - this.posYLastInterval;
         if(Math.abs(movement) > this.maxMovementPerInterval){
@@ -221,6 +230,10 @@ function Paddle(player, scorePositionX){
         }
         this.posYLastInterval = this.posY;
     };
+
+    /**
+     * Function to draw the paddle on screen
+     */
     this.drawPaddle = function(){
         /* -Deprecated use of moving the paddle up and down
         if (this.isMovingDown) {
@@ -234,13 +247,26 @@ function Paddle(player, scorePositionX){
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(this.posX, this.posY, this.paddleWidth, this.paddleHeight);
     };
-
+    /**
+     * Function to draw the players score on the screen
+     */
     this.drawScore = function () {
         ctx.font = "60px squarefont";
         ctx.fillStyle = 'white';
         ctx.fillText(this.score, this.scorePositionX - (ctx.measureText(this.score).width / 2), 150);
-    }
+    };
+    /**
+     * function to check if the player has won
+     */
+    this.checkWin = function() {
+        if(this.score == winScore){
+            winner = this.player;
+        }
+    };
 
+    /**
+     * Function to draw the players name on the screen
+     */
     this.drawName = function () {
         ctx.font = "40px squarefont";
         ctx.fillStyle = 'white';
@@ -248,10 +274,10 @@ function Paddle(player, scorePositionX){
     }
 }
 
-
-
-
-function redraw(){
+/**
+ * Function to draw the whole game
+ */
+function redrawGame(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createCanvas();
     player1.drawPaddle();
@@ -265,6 +291,11 @@ function redraw(){
     }
     ball.drawBall();
 }
+
+/**
+ * function to reset the ball and paddle
+ * @param loserPlayer {number}
+ */
 function resetGame(loserPlayer){
     running = false;
     player1.resetPaddle(); player2.resetPaddle();
@@ -277,23 +308,68 @@ function resetGame(loserPlayer){
         ball.posY = player2.posY + player2.paddleHeight/2 - ball.radius;
     }
 }
-function checkGameOver(){
+
+/**
+ * Function to check if a point is over
+ */
+function checkPointOver(){
     if(ball.posX < 0 - ball.radius){
         //Add point to player 2
         resetGame(1);
         player2.score += 1;
+        player2.checkWin();
     }
     if(ball.posX > windowWidth){
         //Add point to player 1
         resetGame(2);
         player1.score += 1;
+        player1.checkWin();
+    }
+    checkGameOver();
+}
+
+/**
+ * Function to check if the game is over
+ */
+function checkGameOver(){
+    if(winner != null){
+        switch(winner){
+            case 1:
+                //AJAX Call for winner = player 1
+                redrawWinner(player1);
+                break;
+
+            case 2:
+                //AJAX Call for winner = player 2
+                redrawWinner(player2);
+                break;
+        }
+        setTimeout(function(){
+            var protocol = location.protocol;
+            var port = location.port ? location.port : "";
+            var host = protocol + "//" +  window.location.hostname + ":" + port;
+            var page = "";
+            window.location = host + "/" + page;
+        }, 5000);
+
     }
 }
 
+/**
+ * Function that draws the winner on the screen
+ * @param po {object}
+ */
+function redrawWinner(po){
+    var winnerString = "The winner is: player " + po.player;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "60px squarefont";
+    ctx.fillStyle = 'white';
+    ctx.fillText(winnerString, windowWidth/2 - (ctx.measureText(winnerString).width / 2), windowHeight/2);
+}
 //main Program
 //LISTENING TO SOCKET INPUT
 
-//Old button technique
+//DEPRECATED button technique
 socket.on('player1 down', function(data){
     player1.isMovingDown = (data && !player1.isMovingDown);
 });
@@ -306,23 +382,6 @@ socket.on('player1 up', function(data){
 socket.on('player2 up', function(data){
     player2.isMovingUp = (data && !player2.isMovingUp);
 });
-
-
-
-
-//New touch technique
-// socket.on('player 1 touch', function(positionYPercentage){
-//     player1.movePaddle(positionYPercentage * windowHeight);
-// });
-// socket.on('player 2 touch', function(positionYPercentage){
-//     player2.posY = positionYPercentage * windowHeight;
-// });
-// socket.on('start ball', function(data){
-//     if(data && !running){
-//         ball.startBall();
-//         socket.emit('start ball', false);
-//     }
-// });
 
 //#######################DEBUG#########################
 $(document).keydown(function(e){
@@ -361,24 +420,34 @@ $(document).keydown(function(e){
 });
 ball.start();
 setInterval(function(){
-    socket.on('player 1 touch', function(data){
-        player1.movePaddle(data.y * windowHeight);
-    });
-    socket.on('player 2 touch', function(data){
-        player2.movePaddle(data.y * windowHeight);
-    });
-    socket.on('start ball', function(data){
-        if(data && !running){
-            ball.startBall();
-            socket.emit('start ball', false);
-        }
-    });
-    redraw();
-    checkGameOver();
+    if(winner == null){
+        redrawGame();
+        checkPointOver();
+    }
 },1000/60);
+
+/**
+ * SOCKET IO
+ */
+socket.on('player 1 touch', function(data){
+    player1.movePaddle(data.y * windowHeight);
+});
+
+socket.on('player 2 touch', function(data){
+    player2.movePaddle(data.y * windowHeight);
+});
+
+socket.on('start ball', function(data){
+    if(data && !running){
+        ball.startBall();
+        socket.emit('start ball', false);
+    }
+});
 
 socket.on('player 1 connect', function(data){
     player1.name = data.name;
+    player1.fbId = data.fbId;
+    player1.country = data.country;
 });
 
 socket.on('player 1 disconnect', function(){
@@ -387,8 +456,9 @@ socket.on('player 1 disconnect', function(){
 });
 
 socket.on('player 2 connect', function(data){
-    player2.name = data.name;
-    // console.log("CONN" + data.name);
+    player1.name = data.name;
+    player1.fbId = data.fbId;
+    player1.country = data.country;
 });
 
 socket.on('player 2 disconnect', function(){
