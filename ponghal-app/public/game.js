@@ -6,7 +6,7 @@ var windowWidth = window.innerWidth,
     player1 = new Paddle(1, windowWidth / 4),
     player2 = new Paddle(2, (windowWidth / 4) * 3),
     running = false,
-    winScore = 1,
+    winScore = 5,
     winner = null,
     startingPlayer = Math.floor(Math.random()*2 + 1);
     socket = io.connect();
@@ -63,18 +63,9 @@ var ball = {
      * Fuction to Reset the position of the ball and sets the direction
      */
     start: function(){
-        switch(startingPlayer){
-            case 1:
-                this.posX = player1.posX + player1.paddleWidth + this.radius;
-                this.posY = player1.posY + player1.paddleHeight/2 + this.radius;
-                this.direction = 1;
-                break;
-            case 2:
-                this.posX = player2.posX - this.radius;
-                this.posY = player2.posY + player2.paddleHeight/2 + this.radius;
-                this.direction = -1;
-                break;
-        }
+        this.direction = (startingPlayer == 1) ? 1 : -1;
+        this.posX = windowWidth/2 + this.radius/2;
+        this.posY = windowHeight/2 - this.radius/2;
     },
 
     /**
@@ -85,7 +76,6 @@ var ball = {
         while(yVelocity  == 0){
             yVelocity = Math.floor(Math.random() * 6) -2;
         }
-
         this.velX = 5 * this.direction;
         this.velY = yVelocity;
         running = true;
@@ -150,8 +140,11 @@ var ball = {
     drawBall: function(){
         this.updateBall();
         ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1;
         ctx.arc(this.posX,this.posY, this.radius,0,Math.PI*2,false);
         ctx.fill();
+        ctx.stroke();
     }
 };
 
@@ -252,8 +245,11 @@ function Paddle(player, scorePositionX){
      */
     this.drawScore = function () {
         ctx.font = "60px squarefont";
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
         ctx.fillText(this.score, this.scorePositionX - (ctx.measureText(this.score).width / 2), 150);
+        ctx.strokeText(this.score, this.scorePositionX - (ctx.measureText(this.score).width / 2), 150);
     };
     /**
      * function to check if the player has won
@@ -298,15 +294,11 @@ function redrawGame(){
  */
 function resetGame(loserPlayer){
     running = false;
-    player1.resetPaddle(); player2.resetPaddle();
+    player1.resetPaddle();
+    player2.resetPaddle();
     ball.velX = ball.velY = 0;
-    if(loserPlayer == 1){
-        ball.posX = player1.posX + player1.paddleWidth + ball.radius;
-        ball.posY = player1.posY + player1.paddleHeight/2 - ball.radius;
-    }else{
-        ball.posX = player2.posX - ball.radius;
-        ball.posY = player2.posY + player2.paddleHeight/2 - ball.radius;
-    }
+    startingPlayer = loserPlayer;
+
 }
 
 /**
