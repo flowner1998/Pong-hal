@@ -99,11 +99,13 @@ var ball = {
             this.velY = this.speedMultiplier * p1.returnBounceAngle();
             player1.ballWasHit = true;
             player2.ballWasHit = false;
+            this.posX = p1.posX + p1.paddleWidth + this.radius;
             return true;
         }else if(this.posX >= p2.posX && this.posY > p2.posY && this.posY < p2.posY + p2.paddleHeight && !p2.ballWasHit){
             this.velY = this.speedMultiplier * p2.returnBounceAngle();
             player1.ballWasHit = false;
             player2.ballWasHit = true;
+            this.posX = p2.posX - this.radius;
             return true;
         }else{
             return false;
