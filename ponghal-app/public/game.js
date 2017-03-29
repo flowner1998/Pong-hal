@@ -130,7 +130,7 @@ var ball = {
                 this.velX = this.speedCap;
             }
         }
-        
+
         this.posX += this.velX;
         this.posY += this.velY;
 
@@ -179,6 +179,25 @@ function Paddle(player, scorePositionX){
      * Function to return the angle of the ball to bounce back with
      * @returns {number}
      */
+    var self = this;
+    this.player = player;
+    this.name = "";
+    this.img = new Image();
+    this.img.src = "http://www.geonames.org/flags/l/nl.gif";
+    this.imgIsLoaded = false;
+    this.paddleHeight = 100;
+    this.paddleWidth = 15;
+    this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth;
+    this.posY = windowHeight/2 - this.paddleHeight/2;
+    this.velY = 5;
+    this.isMovingDown = false;
+    this.isMovingUp = false;
+    this.score = 0;
+    this.paddleSegmentHeight = this.paddleHeight/10;
+    this.scorePositionX = scorePositionX;
+    this.maxMovementPerInterval = 5;
+    this.posYLastInterval = this.posY;
+    this.ballWasHit = false;
     this.returnBounceAngle = function(){
         for(var i = 0, height = this.paddleSegmentHeight; i < 10; i++, height+=this.paddleSegmentHeight){
             if(ball.posY >= (this.posY + height - this.paddleSegmentHeight) && ball.posY <= (this.posY + height)){
@@ -246,6 +265,12 @@ function Paddle(player, scorePositionX){
      * Function to draw the players score on the screen
      */
     this.drawScore = function () {
+        this.img.onload = function () {
+            self.imgIsLoaded = true;
+        };
+        if(this.imgIsLoaded){
+            ctx.drawImage(this.img,this.scorePositionX - (81 / 2), 102);
+        }
         ctx.font = "60px squarefont";
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#000000';
