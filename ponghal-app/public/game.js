@@ -157,6 +157,7 @@ var ball = {
  * @constructor
  */
 function Paddle(player, scorePositionX){
+    var self = this;
     this.player = player; //Player that controls the paddle
     this.name = ""; //Name assigned to the paddle
     this.fbId = 0; //Facebook ID of the player
@@ -174,30 +175,14 @@ function Paddle(player, scorePositionX){
     this.maxMovementPerInterval = 5; //Maximum movement per frame (needs fixing, might just do that controller sided)
     this.posYLastInterval = this.posY; //Position last frame
     this.ballWasHit = false; // To avoid ball bouncing inside of the paddle
+    this.img = new Image();
+    this.img.src = "http://www.geonames.org/flags/l/nl.gif";
+    this.imgIsLoaded = false;
 
     /**
      * Function to return the angle of the ball to bounce back with
      * @returns {number}
      */
-    var self = this;
-    this.player = player;
-    this.name = "";
-    this.img = new Image();
-    this.img.src = "http://www.geonames.org/flags/l/nl.gif";
-    this.imgIsLoaded = false;
-    this.paddleHeight = 100;
-    this.paddleWidth = 15;
-    this.posX = (this.player == 1) ? 10 : windowWidth - 10 - this.paddleWidth;
-    this.posY = windowHeight/2 - this.paddleHeight/2;
-    this.velY = 5;
-    this.isMovingDown = false;
-    this.isMovingUp = false;
-    this.score = 0;
-    this.paddleSegmentHeight = this.paddleHeight/10;
-    this.scorePositionX = scorePositionX;
-    this.maxMovementPerInterval = 5;
-    this.posYLastInterval = this.posY;
-    this.ballWasHit = false;
     this.returnBounceAngle = function(){
         for(var i = 0, height = this.paddleSegmentHeight; i < 10; i++, height+=this.paddleSegmentHeight){
             if(ball.posY >= (this.posY + height - this.paddleSegmentHeight) && ball.posY <= (this.posY + height)){
