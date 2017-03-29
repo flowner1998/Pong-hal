@@ -176,7 +176,7 @@ function Paddle(player, scorePositionX){
     this.posYLastInterval = this.posY; //Position last frame
     this.ballWasHit = false; // To avoid ball bouncing inside of the paddle
     this.img = new Image();
-    this.img.src = "http://www.geonames.org/flags/l/nl.gif";
+    this.img.src = "http://www.geonames.org/flags/m/" + "nl" + ".png";
     this.imgIsLoaded = false;
 
     /**
@@ -250,18 +250,19 @@ function Paddle(player, scorePositionX){
      * Function to draw the players score on the screen
      */
     this.drawScore = function () {
-        this.img.onload = function () {
-            self.imgIsLoaded = true;
-        };
-        if(this.imgIsLoaded){
-            ctx.drawImage(this.img,this.scorePositionX - (81 / 2), 102);
-        }
         ctx.font = "60px squarefont";
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 2;
-        ctx.fillText(this.score, this.scorePositionX - (ctx.measureText(this.score).width / 2), 150);
-        ctx.strokeText(this.score, this.scorePositionX - (ctx.measureText(this.score).width / 2), 150);
+        var scoreTextWidth = ctx.measureText(this.score).width;
+        this.img.onload = function () {
+            self.imgIsLoaded = true;
+        };
+        if(this.imgIsLoaded){
+            ctx.drawImage(this.img,this.scorePositionX - (90 / 2), 100, 90, 60);
+        }
+        ctx.fillText(this.score, this.scorePositionX - (scoreTextWidth / 2), 150);
+        ctx.strokeText(this.score, this.scorePositionX - (scoreTextWidth / 2), 150);
     };
     /**
      * function to check if the player has won
@@ -460,9 +461,9 @@ socket.on('player 1 disconnect', function(){
 });
 
 socket.on('player 2 connect', function(data){
-    player1.name = data.name;
-    player1.fbId = data.fbId;
-    player1.country = data.country;
+    player2.name = data.name;
+    player2.fbId = data.fbId;
+    player2.country = data.country;
 });
 
 socket.on('player 2 disconnect', function(){

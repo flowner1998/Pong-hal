@@ -104,7 +104,7 @@
             document.getElementById('status').innerHTML =
                 'Welcome ' + response.name + ', have fun playing Ponghal!';
             isLoggedIn = true;
-            socket.emit('player 2 connect', {name: response.name});
+            socket.emit('player 2 connect', {name: response.name, country: response.country});
             $("#guide").fadeIn(300);
         });
     }

@@ -83,3 +83,22 @@ io.on('connection', function(socket){
 server.listen(300, function(){
 	console.log('listening on *:300');
 });
+
+//arduino connection
+var five = require("johnny-five"),
+    board, button;
+
+board = new five.Board();
+
+board.on("ready", function() {
+    button = new five.Button(2);
+    board.repl.inject({
+        button: button
+    });
+
+    button.on("down", function() {
+        console.log("down");
+        io.emit('start ball', true);
+    });
+
+});
