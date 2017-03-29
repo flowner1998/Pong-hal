@@ -7,7 +7,7 @@
 /*##################################################################################*/
 /**
  * Including Node Package Modules
- * !REQUIRED ON FOLDER IS "npm install"!
+ * !REQUIRED ON FOLDER IS "npm install" and "npm install johnny-five"!
  */
 var express = require('express');
 var app = express();

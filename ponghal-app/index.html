@@ -5,6 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-
+<script>
+    var protocol = location.protocol;
+    var port = location.port ? location.port : "";
+    var host = protocol + "//" +  window.location.hostname + ":" + port;
+    var page = "highscores";
+    window.location = host + "/" + page;
+</script>
 </body>
 </html>
