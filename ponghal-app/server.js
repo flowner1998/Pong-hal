@@ -56,6 +56,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 1 connect', function (data) {
+        console.log(data);
         io.emit('player 1 connect', data);
     });
 
@@ -68,6 +69,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 2 connect', function (data) {
+        console.log(data);
         io.emit('player 2 connect', data);
     });
 
@@ -85,20 +87,20 @@ server.listen(300, function(){
 });
 
 //arduino connection
-var five = require("johnny-five"),
-    board, button;
-
-board = new five.Board();
-
-board.on("ready", function() {
-    button = new five.Button(2);
-    board.repl.inject({
-        button: button
-    });
-
-    button.on("down", function() {
-        console.log("down");
-        io.emit('start ball', true);
-    });
-
-});
+// var five = require("johnny-five"),
+//     board, button;
+//
+// board = new five.Board();
+//
+// board.on("ready", function() {
+//     button = new five.Button(2);
+//     board.repl.inject({
+//         button: button
+//     });
+//
+//     button.on("down", function() {
+//         console.log("down");
+//         io.emit('start ball', true);
+//     });
+//
+// });

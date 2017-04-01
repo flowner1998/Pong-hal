@@ -41,6 +41,12 @@
 </main>
 
 <script>
+    var player = {
+        name: '',
+        fbId: 0,
+        country: '',
+        locale: ''
+    };
 
     var socket = io.connect();
     var isLoggedIn = false;
@@ -56,7 +62,7 @@
             // The person is not logged into your app or we are unable to tell.
             document.getElementById('status').innerHTML = 'Please log ' +
                 'into this app.';
-            socket.emit('player 2 disconnect');
+            socket.emit('player 1 disconnect');
             isLoggedIn = false;
         }
     }
@@ -69,9 +75,9 @@
 
     window.fbAsyncInit = function() {
         var appId;
-
         if (inDevelopment) {
-            appId = '1018444101588462';
+            //appId = '1018444101588462';
+            appId = '278014709308775';
         } else {
             appId = '211652732647191'
         }
@@ -99,13 +105,30 @@
 
     function testAPI() {
         console.log('Welcome!  Fetching your information.... ');
-        FB.api('/me', function(response) {
+        FB.api('/me?fields=name,locale,location', function(response) {
             console.log('Successful login for: ' + response.name);
-            document.getElementById('status').innerHTML =
-                'Welcome ' + response.name + ', have fun playing Ponghal!';
+
+            //Set player
+            player.name = response.name;
+            player.fbId = response.id;
+            player.locale = response.locale.substr(0,2);
+
             isLoggedIn = true;
-            socket.emit('player 2 connect', {name: response.name, country: response.country});
-            $("#guide").fadeIn(300);
+
+            document.getElementById('status').innerHTML = 'Welcome ' + response.name + ', have fun playing Ponghal!';
+
+            //Get the country of the user
+            FB.api('/' + response.location.id + '?fields=location', function(locationResponse){
+                console.log(locationResponse);
+                player.country = locationResponse.location.country;
+            });
+
+            setTimeout(function(){
+                console.log(player);
+                socket.emit('player 1 connect', player);
+                $("#guide").fadeIn(300);
+            },1000);
+
         });
     }
 </script>

@@ -28,7 +28,7 @@
 <main class="player">
     <h1>PONGHAL</h1>
 
-    <div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="true" onlogin="checkLoginState();" onlogout="checkLoginState();"></div>
+    <div class="fb-login-button" scope="public_profile,user_location" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="true" onlogin="checkLoginState();" onlogout="checkLoginState();"></div>
 
     <div id="status"></div>
 
@@ -36,9 +36,15 @@
 </main>
 
 <script>
+    var player = {
+        name: '',
+        fbId: 0,
+        country: '',
+        locale: ''
+    };
 
     var socket = io.connect();
-    var isLoggedIn = true;
+    var isLoggedIn = false;
     var name = "";
 
     function statusChangeCallback(response) {
@@ -64,13 +70,9 @@
 
     window.fbAsyncInit = function() {
         var appId;
-        var player = {
-            name: '',
-            fbId: 0,
-            country: ''
-        };
         if (inDevelopment) {
-            appId = '1018444101588462';
+            //appId = '1018444101588462';
+            appId = '278014709308775';
         } else {
             appId = '211652732647191'
         }
@@ -98,13 +100,30 @@
 
     function testAPI() {
         console.log('Welcome!  Fetching your information.... ');
-        FB.api('/me', function(response) {
+        FB.api('/me?fields=name,locale,location', function(response) {
             console.log('Successful login for: ' + response.name);
-            document.getElementById('status').innerHTML =
-                'Welcome ' + response.name + ', have fun playing Ponghal!';
+
+            //Set player
+            player.name = response.name;
+            player.fbId = response.id;
+            player.locale = response.locale.substr(0,2);
+
             isLoggedIn = true;
-            socket.emit('player 1 connect', {name: response.name, country: response.country});
-            $("#guide").fadeIn(300);
+
+            document.getElementById('status').innerHTML = 'Welcome ' + response.name + ', have fun playing Ponghal!';
+
+            //Get the country of the user
+            FB.api('/' + response.location.id + '?fields=location', function(locationResponse){
+                console.log(locationResponse);
+                player.country = locationResponse.location.country;
+            });
+
+            setTimeout(function(){
+                console.log(player);
+                socket.emit('player 1 connect', player);
+                $("#guide").fadeIn(300);
+            },1000);
+
         });
     }
 </script>

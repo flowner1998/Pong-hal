@@ -453,10 +453,14 @@ socket.on('player 1 connect', function(data){
     player1.name = data.name;
     player1.fbId = data.fbId;
     player1.country = data.country;
+    player1.img.src = "http://www.geonames.org/flags/l/" + data.locale + ".gif";
 });
 
 socket.on('player 1 disconnect', function(){
     player1.name = "";
+    player1.fbId = 0;
+    player1.country = "";
+    player1.img.src = "";
     player1.posY = windowHeight/2 - player1.paddleHeight/2;
 });
 
@@ -464,9 +468,13 @@ socket.on('player 2 connect', function(data){
     player2.name = data.name;
     player2.fbId = data.fbId;
     player2.country = data.country;
+    player2.img.src = "http://www.geonames.org/flags/l/" + data.locale + ".gif";
 });
 
 socket.on('player 2 disconnect', function(){
     player2.name = "";
+    player2.fbId = 0;
+    player2.country = "";
+    player2.img.src = "";
     player2.posY = windowHeight/2 - player2.paddleHeight/2;
 });
