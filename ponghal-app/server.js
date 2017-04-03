@@ -7,7 +7,7 @@
 /*##################################################################################*/
 /**
  * Including Node Package Modules
- * !REQUIRED ON FOLDER IS "npm install"!
+ * !REQUIRED ON FOLDER IS "npm install" and "npm install johnny-five"!
  */
 var express = require('express');
 var app = express();
@@ -34,8 +34,13 @@ app.get('/', function(req, res){
 app.get('/game', function(req, res){
     res.sendFile('game.html', {root: __dirname});
 });
+
 app.get('/highscore', function(req, res){
     res.sendFile('highscore.html', {root: __dirname});
+});
+
+app.get('/highscores',function(req, res){
+    res.sendFile('highscores.html', {root: __dirname});
 });
 
 app.get('/player-1', function(req, res){
@@ -61,8 +66,10 @@ io.on('connection', function(socket){
 
     socket.on('player 1 connect', function (data) {
         // io.emit('player 1 connect', data);
-        player1 = data
+        player1 = data;
         checkIfGameIsReady();
+        console.log(data);
+        io.emit('player 1 connect', data);
     });
 
     socket.on('player 1 disconnect', function () {
@@ -74,6 +81,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 2 connect', function (data) {
+        console.log(data);
         io.emit('player 2 connect', data);
     });
 
@@ -95,3 +103,22 @@ function checkIfGameIsReady () {
         io.emit('game ready', {player1: player1, player2: player2});
     }
 }
+
+//arduino connection
+// var five = require("johnny-five"),
+//     board, button;
+//
+// board = new five.Board();
+//
+// board.on("ready", function() {
+//     button = new five.Button(2);
+//     board.repl.inject({
+//         button: button
+//     });
+//
+//     button.on("down", function() {
+//         console.log("down");
+//         io.emit('start ball', true);
+//     });
+//
+// });

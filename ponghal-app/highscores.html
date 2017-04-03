@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Ponghal - Highscores</title>
+    <link rel="stylesheet" href="public/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<main id="highscores">
+    <table id="table-highscores">
+        <caption>
+            <h1>HIGHSCORES</h1>
+        </caption>
+
+        <thead>
+        <tr>
+            <th>Rank</th>
+            <th colspan="2">Country</th>
+            <th>Score</th>
+        </tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+        <tbody id="tbody-highscores">
+        </tbody>
+    </table>
+</main>
+<script src="public/js/highscores.js"></script>
+</body>
+</html>

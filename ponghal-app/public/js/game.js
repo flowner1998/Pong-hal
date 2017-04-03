@@ -99,11 +99,13 @@ var ball = {
             this.velY = this.speedMultiplier * p1.returnBounceAngle();
             player1.ballWasHit = true;
             player2.ballWasHit = false;
+            this.posX = p1.posX + p1.paddleWidth + this.radius;
             return true;
         }else if(this.posX >= p2.posX && this.posY > p2.posY && this.posY < p2.posY + p2.paddleHeight && !p2.ballWasHit){
             this.velY = this.speedMultiplier * p2.returnBounceAngle();
             player1.ballWasHit = false;
             player2.ballWasHit = true;
+            this.posX = p2.posX - this.radius*2;
             return true;
         }else{
             return false;
@@ -128,7 +130,7 @@ var ball = {
                 this.velX = this.speedCap;
             }
         }
-        
+
         this.posX += this.velX;
         this.posY += this.velY;
 
@@ -155,6 +157,7 @@ var ball = {
  * @constructor
  */
 function Paddle(player, scorePositionX){
+    var self = this;
     this.player = player; //Player that controls the paddle
     this.name = ""; //Name assigned to the paddle
     this.fbId = 0; //Facebook ID of the player
@@ -172,6 +175,9 @@ function Paddle(player, scorePositionX){
     this.maxMovementPerInterval = 5; //Maximum movement per frame (needs fixing, might just do that controller sided)
     this.posYLastInterval = this.posY; //Position last frame
     this.ballWasHit = false; // To avoid ball bouncing inside of the paddle
+    this.img = new Image();
+    this.img.src = "http://www.geonames.org/flags/m/" + "nl" + ".png";
+    this.imgIsLoaded = false;
 
     /**
      * Function to return the angle of the ball to bounce back with
@@ -248,8 +254,15 @@ function Paddle(player, scorePositionX){
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 2;
-        ctx.fillText(this.score, this.scorePositionX - (ctx.measureText(this.score).width / 2), 150);
-        ctx.strokeText(this.score, this.scorePositionX - (ctx.measureText(this.score).width / 2), 150);
+        var scoreTextWidth = ctx.measureText(this.score).width;
+        this.img.onload = function () {
+            self.imgIsLoaded = true;
+        };
+        if(this.imgIsLoaded){
+            ctx.drawImage(this.img,this.scorePositionX - (90 / 2), 100, 90, 60);
+        }
+        ctx.fillText(this.score, this.scorePositionX - (scoreTextWidth / 2), 150);
+        ctx.strokeText(this.score, this.scorePositionX - (scoreTextWidth / 2), 150);
     };
     /**
      * function to check if the player has won
@@ -340,7 +353,7 @@ function checkGameOver(){
             var protocol = location.protocol;
             var port = location.port ? location.port : "";
             var host = protocol + "//" +  window.location.hostname + ":" + port;
-            var page = "";
+            var page = "highscores";
             window.location = host + "/" + page;
         }, 5000);
 
@@ -440,20 +453,28 @@ socket.on('player 1 connect', function(data){
     player1.name = data.name;
     player1.fbId = data.fbId;
     player1.country = data.country;
+    player1.img.src = "http://www.geonames.org/flags/l/" + data.locale + ".gif";
 });
 
 socket.on('player 1 disconnect', function(){
     player1.name = "";
+    player1.fbId = 0;
+    player1.country = "";
+    player1.img.src = "";
     player1.posY = windowHeight/2 - player1.paddleHeight/2;
 });
 
 socket.on('player 2 connect', function(data){
-    player1.name = data.name;
-    player1.fbId = data.fbId;
-    player1.country = data.country;
+    player2.name = data.name;
+    player2.fbId = data.fbId;
+    player2.country = data.country;
+    player2.img.src = "http://www.geonames.org/flags/l/" + data.locale + ".gif";
 });
 
 socket.on('player 2 disconnect', function(){
     player2.name = "";
+    player2.fbId = 0;
+    player2.country = "";
+    player2.img.src = "";
     player2.posY = windowHeight/2 - player2.paddleHeight/2;
 });

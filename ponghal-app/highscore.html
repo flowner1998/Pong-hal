@@ -7,7 +7,7 @@
     <script type="application/javascript">
         var socket = io.connect();
 
-        socket.on('game ready', function () {
+        socket.on('player 1 connect', function () {
             var protocol = location.protocol;
             var port = location.port ? location.port : "";
             var host = protocol + "//" +  window.location.hostname + ":" + port;
