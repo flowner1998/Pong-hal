@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Ponghal - Highscores</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="application/javascript">
+        var socket = io.connect();
+
+        socket.on('game ready', function () {
+            var protocol = location.protocol;
+            var port = location.port ? location.port : "";
+            var host = protocol + "//" +  window.location.hostname + ":" + port;
+            var page = "game";
+            window.location = host + "/" + page;
+        });
+    </script>
+</head>
+<body>
+    <h1>Highscore</h1>
+</body>
+</html>

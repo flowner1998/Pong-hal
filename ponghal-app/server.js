@@ -15,6 +15,9 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var bodyParser = require("body-parser");
 
+var player1 = null;
+var player2 = null;
+
 /**
  * Server sending files to a client
  */
@@ -30,6 +33,9 @@ app.get('/', function(req, res){
 });
 app.get('/game', function(req, res){
     res.sendFile('game.html', {root: __dirname});
+});
+app.get('/highscore', function(req, res){
+    res.sendFile('highscore.html', {root: __dirname});
 });
 
 app.get('/player-1', function(req, res){
@@ -54,7 +60,9 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 1 connect', function (data) {
-        io.emit('player 1 connect', data);
+        // io.emit('player 1 connect', data);
+        player1 = data
+        checkIfGameIsReady();
     });
 
     socket.on('player 1 disconnect', function () {
@@ -81,3 +89,9 @@ io.on('connection', function(socket){
 server.listen(300, function(){
 	console.log('listening on *:300');
 });
+
+function checkIfGameIsReady () {
+    if (player1 != null) {
+        io.emit('game ready', {player1: player1, player2: player2});
+    }
+}
