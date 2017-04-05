@@ -37,7 +37,7 @@
 
 <script>
     window.addEventListener('beforeunload',function(){
-        socket.emit('player 1 disconnect');
+        socket.emit('player 2 disconnect');
     });
 
     var player = {
@@ -51,75 +51,31 @@
     var isLoggedIn = false;
     var name = "";
 
-//    function statusChangeCallback(response) {
-//        console.log('statusChangeCallback');
-//        console.log(response);
-//        if (response.status === 'connected') {
-//            // Logged into your app and Facebook.
-//            testAPI();
-//        } else {
-//            // The person is not logged into your app or we are unable to tell.
-//            document.getElementById('status').innerHTML = 'Please log ' +
-//                'into this app.';
-//            socket.emit('player 1 disconnect');
-//            isLoggedIn = false;
-//        }
-//    }
+    function statusChangeCallback(response) {
+        console.log('statusChangeCallback');
+        console.log(response);
+        if (response.status === 'connected') {
+            // Logged into your app and Facebook.
+            testAPI();
+        } else {
+            // The person is not logged into your app or we are unable to tell.
+            document.getElementById('status').innerHTML = 'Please log ' +
+                'into this app.';
+            socket.emit('player 2 disconnect');
+            isLoggedIn = false;
+        }
+    }
 
     function checkLoginState() {
-//        FB.getLoginStatus(function(response) {
-//            statusChangeCallback(response);
-//        });
-
-        console.log("iwhieoo");
-
-        FB.login(function(response) {
-            if (response.authResponse) {
-                console.log('Welcome!  Fetching your information.... ');
-                FB.api('/me', {fields: 'location'}, function(response) {
-                    console.log('Good to see you, ' + response.name + '.');
-                    console.log('resposne', response);
-
-
-                    var countryShortcode = "";
-
-                    $.get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCbSQHZZzYERH2kAg0xlgSy04GTCQaHcws&address=' + response.location.name, function(res){
-//                        console.log('geocoding', res);
-
-
-                        for (var i = 0; i < res.results[0].address_components.length; i++) {
-
-//                            console.log('adrr comp: ', res.results[0].address_components[i]);
-
-                            for (var j = 0; j < res.results[0].address_components[i].types.length; j++) {
-
-
-//                                console.log('types: ', res.results[0].address_components[i].types[j]);
-
-                                if(res.results[0].address_components[i].types[j] == "country"){
-                                    countryShortcode = res.results[0].address_components[i].short_name;
-                                }
-
-                            }
-
-                        }
-
-                        console.log("USER COUNTRY SHORTCODE: " + countryShortcode);
-
-                        socket.emit('player 1 connect');
-                    });
-
-                });
-            } else {
-                console.log('User cancelled login or did not fully authorize.');
-            }
-        }, {scope: 'user_location'});
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
     }
 
     window.fbAsyncInit = function() {
         var appId;
         if (inDevelopment) {
-//            appId = '1018444101588462';
+            //appId = '1018444101588462';
             appId = '278014709308775';
         } else {
             appId = '211652732647191'
@@ -133,9 +89,9 @@
             version    : 'v2.8' // use graph api version 2.8
         });
 
-//        FB.getLoginStatus(function(response) {
-//            statusChangeCallback(response);
-//        });
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
     };
 
     (function(d, s, id) {
@@ -146,46 +102,36 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-//    function testAPI() {
-//        console.log('Welcome!  Fetching your information.... ');
-//        FB.api('/me', function(response) {
-//            console.log('Successful login for: ' + response.name);
-//            document.getElementById('status').innerHTML =
-//                'Welcome ' + response.name + ', have fun playing Ponghal!';
-//            isLoggedIn = true;
-//            socket.emit('player 1 connect', {name: response.name});
-//            $("#guide").fadeIn(300);
-//        });
-//    }
+    function testAPI() {
+        console.log('Welcome!  Fetching your information.... ');
+        FB.api('/me?fields=name,locale,location', function(response) {
+            console.log('Successful login for: ' + response.name);
 
-//    function testAPI() {
-//        console.log('Welcome!  Fetching your information.... ');
-//        FB.api('/me?fields=name,locale,location', function(response) {
-//            console.log('Successful login for: ' + response.name);
-//
-//            //Set player
-//            player.name = response.name;
-//            player.fbId = response.id;
-//            player.locale = response.locale.substr(0,2);
-//
-//            isLoggedIn = true;
-//
-//            document.getElementById('status').innerHTML = 'Welcome ' + response.name + ', have fun playing Ponghal!';
-//
-//            //Get the country of the user
-//            FB.api('/' + response.location.id + '?fields=location', function(locationResponse){
-//                console.log(locationResponse);
-//                player.country = locationResponse.location.country;
-//            });
-//
-//            setTimeout(function(){
-//                console.log(player);
-//                socket.emit('player 1 connect', player);
-//                $("#guide").fadeIn(300);
-//            },1000);
-//
-//        });
-//    }
+            //Set player
+            player.name = response.name;
+            player.fbId = response.id;
+            player.locale = response.locale.substr(0,2);
+
+            isLoggedIn = true;
+
+            document.getElementById('status').innerHTML = 'Welcome ' + response.name + ', have fun playing Ponghal!';
+
+            //Get the country of the user
+            FB.api('/' + response.location.id + '?fields=location', function(locationResponse){
+                console.log(locationResponse);
+                player.country = locationResponse.location.country;
+            });
+
+            setTimeout(function(){
+                console.log(player);
+                socket.emit('player 2 connect', player);
+                $("#guide").fadeIn(300);
+            },1000);
+
+        });
+    }
+
+
 </script>
 
 <script type="text/javascript">

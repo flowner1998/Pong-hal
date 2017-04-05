@@ -80,6 +80,7 @@ io.on('connection', function(socket){
 
     socket.on('player 1 connect', function (data) {
         players[0] = true;
+        console.log('player1 conn');
         if(players[0] && players[1]){
             io.emit('start game', true);
         }
@@ -123,20 +124,20 @@ server.listen(300, function(){
 
 
 // arduino connection
-var five = require("johnny-five"),
-    board, button;
-
-board = new five.Board();
-
-board.on("ready", function() {
-    button = new five.Button(2);
-    board.repl.inject({
-        button: button
-    });
-
-    button.on("down", function() {
-        console.log("down");
-        io.emit('start ball', true);
-    });
-
-});
+// var five = require("johnny-five"),
+//     board, button;
+//
+// board = new five.Board();
+//
+// board.on("ready", function() {
+//     button = new five.Button(2);
+//     board.repl.inject({
+//         button: button
+//     });
+//
+//     button.on("down", function() {
+//         console.log("down");
+//         io.emit('start ball', true);
+//     });
+//
+// });
