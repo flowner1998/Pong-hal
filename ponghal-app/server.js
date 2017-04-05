@@ -58,7 +58,7 @@ app.get('/privacy', function(req, res){
     res.sendFile('privacypolicy.htm', {root: __dirname});
 });
 
-app.get('/reset', function(){
+app.get('/reset', function(req, res){
     players[0] = false;
     players[1] = false;
     res.sendFile('playerTaken.html', {root: __dirname});
