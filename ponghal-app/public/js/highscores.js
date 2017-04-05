@@ -4,11 +4,8 @@
 window.addEventListener('load', init);
 
 //Global vars
-var host = "http://localhost";
-var webserviceLocation = "/sites/Pong-hal/webservice";
-
-var url = host + webserviceLocation + "/highscores.php";
-
+var url = "http://localhost/sites/Pong-hal/webservice" + "/highscores.php";
+var socket = io.connect();
 
 function init(){
     getHighscores();
@@ -76,3 +73,13 @@ function getHighscoresSuccessHandler(data){
 function getHighscoresErrorHandler(data){
     console.error(data);
 }
+
+socket.on('start game', function(){
+
+    var protocol = location.protocol;
+    var port = location.port ? location.port : "";
+    var host = protocol + "//" +  window.location.hostname + ":" + port;
+    var page = "game";
+    window.location = host + "/" + page;
+
+});

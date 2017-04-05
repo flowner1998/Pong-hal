@@ -15,8 +15,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var bodyParser = require("body-parser");
 
-var player1 = null;
-var player2 = null;
+var players = [false, false];
 
 /**
  * Server sending files to a client
@@ -35,19 +34,28 @@ app.get('/game', function(req, res){
     res.sendFile('game.html', {root: __dirname});
 });
 
-app.get('/highscore', function(req, res){
-    res.sendFile('highscore.html', {root: __dirname});
-});
-
 app.get('/highscores',function(req, res){
     res.sendFile('highscores.html', {root: __dirname});
 });
 
 app.get('/player-1', function(req, res){
-    res.sendFile('player-1.html', {root: __dirname});
+    if(players[0]){
+        res.sendFile('playerTaken.html', {root: __dirname});
+    }else{
+        res.sendFile('player-1.html', {root: __dirname});
+    }
 });
+
 app.get('/player-2', function(req, res){
-    res.sendFile('player-2.html', {root: __dirname});
+    if(players[1]){
+        res.sendFile('playerTaken.html', {root: __dirname});
+    }else{
+        res.sendFile('player-2.html', {root: __dirname});
+    }
+});
+
+app.get('/privacy', function(req, res){
+    res.sendFile('privacypolicy.htm', {root: __dirname});
 });
 
 
@@ -65,14 +73,17 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 1 connect', function (data) {
-        // io.emit('player 1 connect', data);
-        player1 = data;
-        checkIfGameIsReady();
-        console.log(data);
-        io.emit('player 1 connect', data);
+        players[0] = true;
+        if(players[0] && players[1]){
+            io.emit('start game', true);
+        }
+        setTimeout(function(){
+            io.emit('player 1 connect', data);
+        },1000);
     });
 
     socket.on('player 1 disconnect', function () {
+        players[0] = false;
         io.emit('player 1 disconnect');
     });
 
@@ -81,11 +92,17 @@ io.on('connection', function(socket){
     });
 
     socket.on('player 2 connect', function (data) {
-        console.log(data);
-        io.emit('player 2 connect', data);
+        players[1] = true;
+        if(players[0] && players[1]){
+            io.emit('start game', true);
+        }
+        setTimeout(function(){
+            io.emit('player 2 connect', data);
+        },1000);
     });
 
     socket.on('player 2 disconnect', function () {
+        players[1] = false;
         io.emit('player 2 disconnect');
     });
 
@@ -98,11 +115,6 @@ server.listen(300, function(){
 	console.log('listening on *:300');
 });
 
-function checkIfGameIsReady () {
-    if (player1 != null) {
-        io.emit('game ready', {player1: player1, player2: player2});
-    }
-}
 
 //arduino connection
 // var five = require("johnny-five"),

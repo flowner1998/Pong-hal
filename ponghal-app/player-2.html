@@ -41,6 +41,10 @@
 </main>
 
 <script>
+    window.addEventListener('beforeunload',function(){
+        socket.emit('player 2 disconnect');
+    });
+
     var player = {
         name: '',
         fbId: 0,
@@ -62,7 +66,7 @@
             // The person is not logged into your app or we are unable to tell.
             document.getElementById('status').innerHTML = 'Please log ' +
                 'into this app.';
-            socket.emit('player 1 disconnect');
+            socket.emit('player 2 disconnect');
             isLoggedIn = false;
         }
     }
@@ -125,7 +129,7 @@
 
             setTimeout(function(){
                 console.log(player);
-                socket.emit('player 1 connect', player);
+                socket.emit('player 2 connect', player);
                 $("#guide").fadeIn(300);
             },1000);
 
