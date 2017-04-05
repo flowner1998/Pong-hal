@@ -58,6 +58,12 @@ app.get('/privacy', function(req, res){
     res.sendFile('privacypolicy.htm', {root: __dirname});
 });
 
+app.get('/reset', function(){
+    players[0] = false;
+    players[1] = false;
+    res.sendFile('playerTaken.html', {root: __dirname});
+});
+
 
 
 /**
@@ -116,21 +122,21 @@ server.listen(300, function(){
 });
 
 
-//arduino connection
-// var five = require("johnny-five"),
-//     board, button;
-//
-// board = new five.Board();
-//
-// board.on("ready", function() {
-//     button = new five.Button(2);
-//     board.repl.inject({
-//         button: button
-//     });
-//
-//     button.on("down", function() {
-//         console.log("down");
-//         io.emit('start ball', true);
-//     });
-//
-// });
+// arduino connection
+var five = require("johnny-five"),
+    board, button;
+
+board = new five.Board();
+
+board.on("ready", function() {
+    button = new five.Button(2);
+    board.repl.inject({
+        button: button
+    });
+
+    button.on("down", function() {
+        console.log("down");
+        io.emit('start ball', true);
+    });
+
+});

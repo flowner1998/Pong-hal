@@ -1,9 +1,12 @@
 <?php
 //Set the headers to allow CORS and set content type.
+header('Content-Type: application/json;charset=UTF-8');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Access-Control-Allow-Origin, X-Requested-With');
-header("Content-Type: application/json");
+header('Access-Control-Allow-Methods: DELETE, HEAD, GET, OPTIONS, POST, PUT');
+header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description, X-Requested-With');
+header('Access-Control-Max-Age: 1728000');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Credentials: true');
 
 //Creating the file
 $highscores = ['countries'=>[]];
